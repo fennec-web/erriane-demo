@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Test de la base · Erriane Foods</title>
+<style>
+  body { font: 15px/1.6 system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; }
+  h1 { font-size: 1.4rem; }
+  .ligne { padding: 10px 12px; border-left: 4px solid #ccc; margin: 8px 0; background: #f7f7f7; }
+  .ok { border-color: #2e7d32; }
+  .ko { border-color: #c62828; background: #fdecea; }
+  code { background: #eee; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<h1>Test de la base Erriane</h1>
+<p>Cette page ne sert qu'à vérifier que le site joint bien Supabase. Elle ne
+demande aucun mot de passe et ne montre aucune donnée.</p>
+<div id="out">Vérification…</div>
+
+<script src="../js/config-supabase.js"></script>
+<script>
+(function(){
+  var out = document.getElementById('out');
+  function ligne(ok, texte){
+    var d = document.createElement('div');
+    d.className = 'ligne ' + (ok ? 'ok' : 'ko');
+    d.textContent = (ok ? 'OK  ' : 'KO  ') + texte;
+    out.appendChild(d);
+  }
+  function vider(){ out.textContent = ''; }
+
+  async function test(){
+    var url = window.SUPABASE_URL, anon = window.SUPABASE_ANON;
+    vider();
+    if(!url || !anon){
+      ligne(false, 'Les deux valeurs ne sont pas remplies dans js/config-supabase.js.');
+      return;
+    }
+    ligne(true, 'Adresse : ' + url);
+
+    try {
+      var r = await fetch(url + '/auth/v1/health', { headers: { apikey: anon } });
+      ligne(r.ok, 'Service de connexion : HTTP ' + r.status);
+    } catch(e){ ligne(false, 'Service de connexion injoignable : ' + e.message); }
+
+    var tables = ['profils', 'commandes', 'commande_lignes', 'paiements', 'messages'];
+    for(var i = 0; i < tables.length; i++){
+      try {
+        var rep = await fetch(url + '/rest/v1/' + tables[i] + '?select=*&limit=1', {
+          headers: { apikey: anon, Authorization: 'Bearer ' + anon }
+        });
+        if(rep.status === 200){
+          var l = await rep.json();
+          ligne(true, 'Table ' + tables[i] + ' : répond, ' + l.length + ' ligne(s) visible(s) sans compte.');
+        } else if(rep.status === 401 || rep.status === 403){
+          ligne(true, 'Table ' + tables[i] + ' : protégée (HTTP ' + rep.status + '), c\'est normal sans connexion.');
+        } else {
+          ligne(false, 'Table ' + tables[i] + ' : HTTP ' + rep.status + '. La table existe-t-elle ? Voir supabase/schema.sql.');
+        }
+      } catch(e){ ligne(false, 'Table ' + tables[i] + ' : ' + e.message); }
+    }
+    ligne(true, 'Si toutes les lignes sont vertes, la base est prête à être branchée.');
+  }
+  test();
+})();
+</script>
+</body>
+</html>
