@@ -1,0 +1,847 @@
+/* Erriane Foods — Parcours de commande.
+   Header compte et panier, fenêtres (modales), panier, livraison, confirmation. */
+
+/* ===== Header : panier et compte ===== */
+.entete__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+}
+#zone-compte {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+}
+.bouton--petit {
+  padding: 8px 14px;
+  font-size: .82rem;
+  min-height: 38px;
+}
+.panier-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bouton);
+  cursor: pointer;
+  color: var(--couleur-principale);
+}
+.panier-btn:hover { border-color: var(--couleur-principale); }
+.panier-btn svg { width: 21px; height: 21px; }
+.panier-btn__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--couleur-accent);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+  display: none;
+  place-items: center;
+}
+
+.compte__chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bouton);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--couleur-principale);
+  cursor: default;
+}
+.compte__chip:hover { border-color: var(--couleur-principale); }
+.compte__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--couleur-principale);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.compte__chevron { width: 16px; height: 16px; opacity: .5; }
+.compte__menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 208px;
+  padding: var(--espace-2) 0;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-bouton);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity .15s, transform .15s, visibility .15s;
+  z-index: 60;
+}
+.compte__chip:hover .compte__menu,
+.compte__chip:focus-within .compte__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.compte__menu a, .compte__menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px var(--espace-3);
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--couleur-texte);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.compte__menu a:hover, .compte__menu button:hover { background: var(--couleur-fond-2); }
+.compte__menu button { border-top: 1px solid var(--couleur-bordure); margin-top: var(--espace-2); color: var(--couleur-accent); }
+
+@media (max-width: 700px) {
+  .compte__nom { display: none; }
+  .compte__chip { padding: 6px; }
+  .compte__chevron { display: none; }
+
+  /* Au téléphone, l'en-tête n'a pas la place pour tout garder côte à côte : le
+     nom écrit à côté du logo fait doublon avec lui, et les boutons se serrent.
+     Rien du parcours ne passe dans le menu pour autant : le panier, « Créer un
+     compte » et « Se connecter » restent tous visibles, à leur taille. */
+  .entete__barre { width: 100%; padding-inline: var(--espace-2); gap: var(--espace-2); }
+  .entete__marque { flex: none; }
+  .entete__marque img { height: 34px; }
+  .entete__marque span { display: none; }
+  .entete__menu-bouton { flex: none; padding-inline: var(--espace-2); }
+  .entete__actions { gap: var(--espace-1); }
+  #zone-compte { gap: var(--espace-1); }
+  #zone-compte .bouton { padding-inline: 8px; font-size: .75rem; white-space: nowrap; }
+}
+
+/* Sur les téléphones les plus étroits, il manque encore une vingtaine de
+   pixels : l'en-tête se resserre d'un cran plutôt que de laisser filer une
+   barre de défilement horizontale. Les mots ne changent pas. */
+@media (max-width: 380px) {
+  .entete__barre { padding-inline: 6px; gap: var(--espace-1); }
+  .entete__marque img { height: 28px; }
+  .entete__menu-bouton { padding-inline: var(--espace-1); }
+  #zone-compte .bouton { padding-inline: 6px; font-size: .72rem; }
+}
+
+/* Les écrans de 320 px (les tout petits téléphones encore en service) tiennent
+   la même ligne, serrée au maximum. Les deux mots restent lisibles, et la
+   hauteur de 44 px garde des zones tactiles correctes. */
+@media (max-width: 340px) {
+  .entete__barre { padding-inline: var(--espace-1); }
+  .entete__marque img { height: 24px; }
+  .entete__menu-bouton { padding-inline: 2px; }
+  .entete__actions, #zone-compte { gap: 2px; }
+  #zone-compte .bouton { padding-inline: 4px; font-size: .68rem; }
+}
+
+/* ===== Fenêtres (modales) ===== */
+.ov {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 100;
+  background: rgba(43, 29, 20, .55);
+}
+.ov.open { display: flex; align-items: center; justify-content: center; padding: var(--espace-3); }
+.ov__boite {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: calc(100vh - 2 * var(--espace-3));
+  overflow-y: auto;
+  background: #fff;
+  border-radius: var(--rayon-carte);
+  padding: var(--espace-4);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .25);
+}
+.ov__boite--centre { text-align: center; }
+.ov__fermer {
+  position: absolute;
+  top: var(--espace-2);
+  right: var(--espace-2);
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--couleur-texte-3);
+  cursor: pointer;
+  border-radius: var(--rayon);
+}
+.ov__fermer:hover { background: var(--couleur-fond-2); color: var(--couleur-texte); }
+
+/* ===== Champs et messages dans les fenêtres ===== */
+.msg-err {
+  display: none;
+  font-size: .86rem;
+  color: var(--couleur-accent);
+  margin: 0 0 var(--espace-3);
+}
+.champ__facultatif { font-weight: 400; color: var(--couleur-texte-3); font-size: .85rem; }
+.lien-discret {
+  display: block;
+  width: 100%;
+  margin-top: var(--espace-3);
+  background: none;
+  border: 0;
+  color: var(--couleur-texte-2);
+  font-size: .88rem;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+.lien-discret:hover { color: var(--couleur-accent); }
+
+/* ===== Inscription / connexion ===== */
+.auth__onglets {
+  display: flex;
+  gap: var(--espace-2);
+  margin-bottom: var(--espace-4);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.auth__onglet {
+  flex: 1;
+  padding: var(--espace-2) 0;
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  font-weight: 600;
+  font-size: .92rem;
+  color: var(--couleur-texte-3);
+  cursor: pointer;
+  font-family: inherit;
+}
+.auth__onglet.on { color: var(--couleur-principale); border-bottom-color: var(--couleur-accent); }
+#a-login, #a-reg { display: none; }
+#a-login.on, #a-reg.on { display: block; }
+.auth__demo { margin-top: var(--espace-4); padding-top: var(--espace-3); border-top: 1px dashed var(--couleur-bordure); }
+.auth__demo b { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--couleur-texte-3); margin-bottom: var(--espace-2); }
+.compte-demo {
+  padding: 10px var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  margin-bottom: var(--espace-2);
+  cursor: pointer;
+}
+.compte-demo:hover { border-color: var(--couleur-accent); background: var(--couleur-fond-3); }
+.compte-demo b { display: block; font-size: .9rem; }
+.compte-demo span { font-size: .78rem; color: var(--couleur-texte-2); }
+.auth__vide { font-size: .86rem; color: var(--couleur-texte-2); }
+/* La note de l'inscription : à quoi servent les informations demandées, et où
+   lire la suite. Obligatoire dès qu'un formulaire collecte un nom ou un
+   téléphone (loi 18-07), donc elle vit sous le bouton, en petit. */
+.auth__note { font-size: .82rem; color: var(--couleur-texte-2); margin: var(--espace-3) 0 0; }
+/* Le passage d'un onglet à l'autre, écrit sous le bouton : « Vous avez déjà un
+   compte ? Connectez-vous ». Le lien reste dans la phrase, il ne prend pas la
+   ligne entière comme un .lien-discret ordinaire. */
+.auth__bascule {
+  margin: var(--espace-2) 0 0;
+  font-size: .86rem;
+  color: var(--couleur-texte-2);
+}
+.auth__bascule .lien-discret {
+  display: inline;
+  width: auto;
+  margin: 0 0 0 4px;
+  padding: 0;
+  font-size: inherit;
+  color: var(--couleur-accent);
+  text-decoration: underline;
+}
+/* Arrivé depuis le panier : ce qui est gardé, dit avant les champs. */
+.auth__rappel {
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond-2);
+  border-left: 3px solid var(--couleur-accent);
+  padding: var(--espace-2) var(--espace-3);
+  margin: 0 0 var(--espace-4);
+}
+
+/* ===== Panier ===== */
+.panier__ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--espace-3);
+  padding: var(--espace-3) 0;
+  border-bottom: 1px dashed var(--couleur-bordure);
+}
+.panier__info b { display: block; font-size: .95rem; }
+.panier__info span { font-size: .82rem; color: var(--couleur-texte-2); }
+.panier__compo { font-size: .78rem; color: var(--couleur-texte-3); margin-top: 2px; }
+.panier__reglages { display: flex; align-items: center; gap: var(--espace-2); flex-shrink: 0; }
+/* Largeur minimale et non largeur fixe : « −10 » et « +10 » sont plus larges que
+   « − » et « + », et leur texte se faisait rogner de deux pixels. */
+.qty-btn {
+  min-width: 30px;
+  padding: 0 6px;
+  height: 30px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  background: #fff;
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--couleur-principale);
+}
+.qty-btn:hover { border-color: var(--couleur-principale); }
+.panier__qty { min-width: 26px; text-align: center; font-weight: 700; }
+.panier__sous-total { min-width: 88px; text-align: right; font-weight: 700; font-size: .92rem; }
+.panier__retirer {
+  border: 0;
+  background: none;
+  color: var(--couleur-texte-3);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.panier__retirer:hover { color: var(--couleur-accent); }
+.panier__actions { text-align: right; margin-top: var(--espace-3); }
+.panier__actions .lien-discret { color: var(--couleur-accent); }
+.panier__vide { text-align: center; color: var(--couleur-texte-2); padding: var(--espace-4) 0; }
+.panier__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--espace-3) 0;
+  margin-top: var(--espace-3);
+  border-top: 2px solid var(--couleur-principale);
+  font-size: 1rem;
+}
+.panier__total b { font-family: var(--police-titres); font-size: 1.5rem; color: var(--couleur-accent); }
+/* Le prix se détaille en trois lignes : hors taxes, TVA, à payer. Seule la
+   dernière porte le trait et le grand chiffre, sinon trois montants crient
+   aussi fort et le total ne se lit plus. */
+.panier__total--calme,
+.panier__total--fort {
+  border-top: 0;
+  margin-top: 0;
+  padding: var(--espace-1) 0;
+  font-size: .92rem;
+}
+.panier__total--calme b { font-size: 1.05rem; color: var(--couleur-texte); }
+.panier__total--fort { border-top: 1px solid var(--couleur-bordure); margin-top: var(--espace-2); padding-top: var(--espace-2); }
+.panier__note { font-size: .82rem; color: var(--couleur-texte-2); margin: var(--espace-2) 0 var(--espace-3); }
+
+/* ===== Choix de la quantité =====
+   Il vit en bas de la fenêtre d'un pack. Deux de ses pièces ont disparu le
+   2 octobre 2026 avec la fenêtre de quantité : l'en-tête et la ligne de prix,
+   que la présentation montre déjà. */
+.cmd__qty { margin: var(--espace-3) 0; }
+.cmd__qty label { display: block; font-weight: 600; margin-bottom: var(--espace-2); }
+.cmd__qty-reglages { display: flex; align-items: center; gap: var(--espace-2); }
+/* Un champ de nombre arrive avec sa propre largeur (environ 250 px) et, dans une
+   grille, cette largeur compte comme un minimum : la colonne se réglait sur elle
+   et débordait de l'écran sur un téléphone. Une base nulle lui rend sa place :
+   il prend ce qui reste, jamais plus. Mesuré à 461 px de contenu dans un écran de
+   390 px, le 2 octobre 2026. */
+.cmd__qty-reglages input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 8px;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  min-height: 44px;
+}
+/* Sur un téléphone, la rangée des cinq commandes est serrée : on resserre les
+   espaces plutôt que de rogner les boutons. */
+@media (max-width: 560px) {
+  .cmd__qty-reglages { gap: var(--espace-1); }
+}
+.cmd__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--espace-3) 0;
+  border-top: 2px solid var(--couleur-principale);
+  margin-bottom: var(--espace-3);
+}
+.cmd__total b { font-family: var(--police-titres); font-size: 1.5rem; color: var(--couleur-accent); }
+
+/* ===== Composition ===== */
+.compo__prix {
+  font-family: var(--police-titres);
+  font-size: 1.2rem;
+  color: var(--couleur-accent);
+  margin-bottom: var(--espace-3);
+}
+.compo__liste { margin: 0 0 var(--espace-4); padding-left: var(--espace-4); }
+.compo__liste li { margin-bottom: var(--espace-2); font-size: .92rem; color: var(--couleur-texte-2); }
+
+/* ===== Présentation d'un pack =====
+   Le client ouvre un pack pour vérifier ce qu'il y a dedans. Les vues du pack
+   tiennent la colonne de gauche, le texte la colonne de droite. Sur un
+   téléphone, la photo passe au-dessus : on regarde d'abord, on lit ensuite. */
+.ov__boite--pack { max-width: 880px; padding: 0; overflow-y: auto; }
+/* La croix de fermeture tombe sur la photo : sur un fond clair elle
+   disparaîtrait. On lui donne un fond plein. */
+.ov__boite--pack .ov__fermer {
+  z-index: 2;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+}
+.pres { display: grid; grid-template-columns: 1fr 1fr; }
+/* Un coffret qui n'a aucune photo n'a pas de colonne d'album. Sans cette règle,
+   la moitié droite de la fenêtre restait blanche et le texte se tassait à
+   gauche : mesuré sur le Coffret Excellence le 26 octobre 2026. */
+.ov__boite--sans-album { max-width: 560px; }
+.ov__boite--sans-album .pres { grid-template-columns: 1fr; }
+
+.pres__album {
+  position: relative;
+  overflow: hidden;
+  min-height: 340px;
+  background: var(--couleur-fond-3);
+  border-radius: var(--rayon-carte) 0 0 var(--rayon-carte);
+}
+/* Les vues sont posées en absolu pour remplir la colonne, quelle que soit la
+   hauteur du texte en face. */
+.pres__pistes {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transition: transform .35s ease;
+}
+.pres__photo {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.pres__fleche {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--rayon);
+  background: rgba(255, 255, 255, .92);
+  color: var(--couleur-texte);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.pres__fleche:hover { background: #fff; }
+.pres__fleche--prec { left: var(--espace-2); }
+.pres__fleche--suiv { right: var(--espace-2); }
+.pres__album--seule .pres__fleche,
+.pres__album--seule .pres__points,
+.pres__album--seule .pres__compteur { display: none; }
+.pres__compteur {
+  position: absolute;
+  top: var(--espace-2);
+  left: var(--espace-2);
+  font-size: .74rem;
+  letter-spacing: .06em;
+  padding: 3px 8px;
+  color: #fff;
+  background: rgba(43, 29, 20, .62);
+  border-radius: var(--rayon);
+}
+.pres__points {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--espace-2);
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.pres__point {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: rgba(43, 29, 20, .35);
+  cursor: pointer;
+}
+.pres__point.on { background: #fff; }
+
+/* La colonne de droite tient en deux morceaux : le texte, qui défile s'il est
+   long, et le bas de la fenêtre (quantité, total, bouton) qui ne bouge pas. Le
+   client garde le bouton sous les yeux pendant qu'il lit ce qu'il achète. */
+.pres__texte {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2 * var(--espace-3));
+}
+.pres__corps {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--espace-5) var(--espace-4) var(--espace-3);
+}
+.pres__achat {
+  padding: var(--espace-3) var(--espace-4) var(--espace-4);
+  border-top: 1px solid var(--couleur-bordure);
+  background: #fff;
+}
+/* Le total porte déjà sa propre respiration ; les boutons n'en rajoutent pas. */
+.pres__achat .pres__acts { margin-top: 0; }
+.pres__achat .lien-discret { margin-top: var(--espace-2); width: 100%; }
+.pres__texte h3 { font-size: 1.4rem; margin-bottom: var(--espace-2); }
+.pres__desc {
+  font-size: .95rem;
+  line-height: 1.65;
+  color: var(--couleur-texte-2);
+  margin: 0 0 var(--espace-4);
+}
+.pres__titre {
+  font-family: var(--police-texte);
+  font-size: .76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-3);
+  margin: 0 0 var(--espace-2);
+}
+/* L'album et les boutons sont montrés ou cachés par le style en ligne (voir
+   « voir » dans catalogue.js) : une règle sur [hidden] ne tiendrait pas devant
+   le « display » de « .bouton ». */
+.pres__acts { display: flex; flex-direction: column; gap: var(--espace-2); margin-top: var(--espace-4); }
+
+@media (max-width: 720px) {
+  .pres { grid-template-columns: 1fr; }
+  /* La largeur est donnée à l'album, et c'est elle qui règle la hauteur par le
+     4/3. Sans ce « width », l'album tire sa largeur de sa hauteur (celle du
+     texte en face), et débordait de la colonne à droite : mesuré à 461 px de
+     large dans un écran de 390 px, le 2 octobre 2026. */
+  .pres__album {
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--rayon-carte) var(--rayon-carte) 0 0;
+  }
+  /* Sur un téléphone, c'est la fenêtre entière qui défile : une colonne qui
+     défile dans une fenêtre qui défile donne deux glissières et on ne sait plus
+     laquelle bouge. */
+  .pres__texte { max-height: none; }
+  .pres__corps { overflow-y: visible; }
+  /* La barre d'achat reste collée en bas pendant qu'on lit : sans ça, il faut
+     faire défiler toute la présentation pour trouver le bouton, et c'est
+     exactement ce que Massyl reprochait à la fenêtre de quantité. */
+  .pres__achat {
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 -6px 16px rgba(43, 29, 20, .07);
+  }
+}
+
+/* ===== Confirmation ===== */
+.confirme__rond {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--espace-3);
+  border-radius: 50%;
+  background: var(--couleur-ok);
+  display: grid;
+  place-items: center;
+}
+.confirme__rond svg { width: 32px; height: 32px; stroke: #fff; }
+.confirme__ref {
+  font-family: var(--police-titres);
+  font-size: 1.3rem;
+  color: var(--couleur-accent);
+  margin-bottom: var(--espace-3);
+}
+.confirme__texte { font-size: .92rem; color: var(--couleur-texte-2); margin-bottom: var(--espace-4); }
+
+/* ===== Message passager ===== */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--espace-4);
+  transform: translateX(-50%) translateY(16px);
+  max-width: min(90vw, 420px);
+  padding: var(--espace-3) var(--espace-4);
+  background: var(--couleur-principale);
+  color: #fff;
+  font-size: .92rem;
+  border-radius: var(--rayon-bouton);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 200;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== Cartes de pack : ajouts ===== */
+.pack-card__flag {
+  position: absolute;
+  top: var(--espace-3);
+  left: var(--espace-3);
+  padding: 4px 12px;
+  background: var(--couleur-accent);
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+.pack-card__prix--demande { color: var(--couleur-texte-2); font-size: 1.05rem; }
+.pack-card__acts { display: flex; gap: var(--espace-2); }
+.pack-card__acts .bouton { flex: 1; font-size: .86rem; padding: 10px 12px; }
+
+/* ===== Pages du compte client ===== */
+.page__actions { display: flex; flex-wrap: wrap; gap: var(--espace-3); margin-top: var(--espace-4); }
+
+/* Encadré : demande de connexion, compte vide, solde */
+.encart {
+  padding: var(--espace-4);
+  margin-bottom: var(--espace-4);
+  background: var(--couleur-fond-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+}
+.encart h3 { font-size: 1.05rem; margin-bottom: var(--espace-2); }
+.encart p { color: var(--couleur-texte-2); margin-bottom: var(--espace-3); }
+.encart .bouton { margin-right: var(--espace-2); }
+.encart--alerte,
+.encart--ok {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--espace-3);
+  padding: var(--espace-3) var(--espace-4);
+}
+.encart--alerte { background: #fbf1f0; border-color: var(--couleur-accent); color: var(--couleur-accent); }
+.encart--ok { background: #f0f8f3; border-color: var(--couleur-ok); color: var(--couleur-ok); }
+
+/* Bloc titré avec un bouton à droite (informations de livraison) */
+.panneau {
+  padding: var(--espace-4);
+  margin-bottom: var(--espace-4);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+}
+.panneau__tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espace-3);
+  margin-bottom: var(--espace-3);
+}
+.panneau__tete h3 { margin: 0; font-size: 1.05rem; }
+
+/* Ligne « libellé / valeur » du profil */
+.fiche {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  padding: var(--espace-2) 0;
+  border-bottom: 1px dashed var(--couleur-bordure);
+}
+.fiche:last-child { border-bottom: 0; }
+.fiche dt { color: var(--couleur-texte-2); font-size: .9rem; }
+.fiche dd { margin: 0; font-weight: 600; text-align: right; word-break: break-word; }
+
+/* Étiquette d'état d'une commande */
+.etat {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.etat--attente { background: #fdf3e0; color: var(--couleur-alerte); }
+.etat--confirmee { background: #eef7f1; color: var(--couleur-ok); }
+.etat--reportee { background: #eef1f7; color: #33507a; }
+.etat--annulee { background: #fbf1f0; color: var(--couleur-accent); }
+
+/* Carte d'une commande passée */
+.carte-cmd {
+  padding: var(--espace-4);
+  margin-bottom: var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+}
+.carte-cmd__tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espace-3);
+  margin-bottom: var(--espace-2);
+}
+.carte-cmd__tete b { font-family: var(--police-titres); font-size: 1.1rem; letter-spacing: .02em; }
+.carte-cmd__livraison { font-size: .88rem; color: var(--couleur-texte-2); margin-bottom: var(--espace-3); }
+.carte-cmd__compo {
+  padding: var(--espace-2) var(--espace-3);
+  margin-bottom: var(--espace-3);
+  background: var(--couleur-fond-3);
+  border-radius: var(--rayon);
+  font-size: .84rem;
+  color: var(--couleur-texte-2);
+  line-height: 1.6;
+}
+.cmd-ligne { display: flex; justify-content: space-between; gap: var(--espace-3); font-size: .92rem; padding: 4px 0; }
+.cmd-suite { font-size: .88rem; color: var(--couleur-alerte); margin: var(--espace-2) 0 0; }
+.carte-cmd__pied {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: var(--espace-3);
+  padding-top: var(--espace-3);
+  border-top: 1px solid var(--couleur-bordure);
+  font-size: .92rem;
+}
+.carte-cmd__pied b { font-family: var(--police-titres); font-size: 1.2rem; color: var(--couleur-accent); }
+/* Même détail que dans le panier : hors taxes, TVA, à payer. */
+.carte-cmd__pied + .carte-cmd__pied {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: var(--espace-1);
+  font-size: .86rem;
+}
+.carte-cmd__pied + .carte-cmd__pied b { font-size: 1rem; }
+.carte-cmd__pied.carte-cmd__pied--fort {
+  border-top: 1px solid var(--couleur-bordure);
+  margin-top: var(--espace-2);
+  padding-top: var(--espace-2);
+}
+.carte-cmd__pied.carte-cmd__pied--fort b { font-size: 1.2rem; }
+
+/* Résumé chiffré et tableau des versements */
+.compte-resume {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--espace-3);
+  margin-bottom: var(--espace-4);
+}
+.compte-resume > div {
+  padding: var(--espace-3);
+  background: var(--couleur-fond-2);
+  border-radius: var(--rayon-carte);
+}
+.compte-resume span { display: block; font-size: .82rem; color: var(--couleur-texte-2); margin-bottom: 4px; }
+.compte-resume b { font-size: 1.15rem; }
+.solde-neg { color: var(--couleur-accent); }
+.solde-pos { color: var(--couleur-ok); }
+
+.tableau { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tableau th {
+  text-align: left;
+  padding: var(--espace-2) var(--espace-3);
+  border-bottom: 2px solid var(--couleur-principale);
+  font-size: .78rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-2);
+}
+.tableau td { padding: var(--espace-3); border-bottom: 1px solid var(--couleur-bordure); }
+/* Le numéro de chèque, sous le type de versement : le client retrouve sur son
+   relevé le numéro qu'il a remis. */
+.tableau td small { display: block; font-size: .78rem; color: var(--couleur-texte-3); }
+.tableau__vide { text-align: center; color: var(--couleur-texte-3); }
+.note-bas { margin-top: var(--espace-3); font-size: .85rem; color: var(--couleur-texte-3); }
+
+/* Le rappel de connexion sur le formulaire de livraison, pour un client qui a
+   déjà un compte : il n'a pas à attendre l'étape du compte pour se connecter. */
+.ck-compte {
+  margin: var(--espace-2) 0 var(--espace-4);
+  font-size: .86rem;
+  color: var(--couleur-texte-2);
+}
+.ck-compte .lien-discret {
+  display: inline;
+  width: auto;
+  margin: 0 0 0 4px;
+  padding: 0;
+  font-size: inherit;
+  color: var(--couleur-accent);
+  text-decoration: underline;
+}
+.ck-compte__note {
+  display: block;
+  margin-top: 2px;
+  font-size: .78rem;
+  color: var(--couleur-texte-3);
+}
+
+/* La confirmation de vidage, dans le panier : une question, puis deux boutons. */
+.panier__actions { text-align: center; }
+.panier__vide-question {
+  display: block;
+  font-size: .88rem;
+  color: var(--couleur-texte-2);
+  margin-bottom: var(--espace-2);
+}
+.panier__vide-oui { color: var(--couleur-accent); font-weight: 600; }
+
+/* La fenêtre de confirmation, dans la page (remplace `confirm`). */
+.ov__boite--confirme {
+  max-width: 420px;
+  padding: var(--espace-4);
+}
+.confirme__texte {
+  margin: 0 0 var(--espace-4);
+  font-size: .96rem;
+  line-height: 1.55;
+}
+.confirme__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  justify-content: flex-end;
+}
+
+/* La confirmation passe devant la fenêtre qu'elle interroge. */
+.ov--dessus { z-index: 110; }
+
+/* Le solde du client dans l'en-tête, à gauche du panier. Rouge tant qu'il doit
+   quelque chose, vert quand tout est réglé. */
+.solde-entete {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.solde-entete--du { background: #FDECEC; border-color: #E4B4B4; color: #8B1A1A; }
+.solde-entete--ok { background: #EAF6EE; border-color: #B9DCC7; color: #1A7A44; }
+/* Sur un téléphone, la place manque entre la marque et le panier : le solde
+   reste dans l'espace client, où il est de toute façon plus utile. */
+@media (max-width: 560px) {
+  .solde-entete { display: none; }
+}

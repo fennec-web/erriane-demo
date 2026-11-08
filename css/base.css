@@ -1,0 +1,126 @@
+/* Base commune à tous les sites Fennec Web.
+   Ne pas modifier dans un site client : une correction se fait ici, dans le gabarit,
+   puis se recopie. Les styles propres au client vont dans site.css. */
+
+/* ---------- Remise à zéro ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--police-texte);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond);
+}
+img, svg, video { max-width: 100%; display: block; }
+h1, h2, h3, h4 { font-family: var(--police-titres); line-height: 1.15; margin: 0 0 var(--espace-3); color: var(--couleur-principale); }
+h1 { font-size: clamp(1.9rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.1rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0 0 var(--espace-3); }
+a { color: var(--couleur-accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--couleur-accent); outline-offset: 2px; }
+.visuellement-cache { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Mise en page ---------- */
+.contenu { width: min(100% - 2 * var(--espace-3), var(--largeur-max)); margin-inline: auto; }
+.section { padding-block: var(--espace-5); }
+.section--alt { background: var(--couleur-fond-2); }
+.grille { display: grid; gap: var(--espace-4); }
+@media (min-width: 720px) {
+  .grille--2 { grid-template-columns: 1fr 1fr; }
+  .grille--3 { grid-template-columns: repeat(3, 1fr); }
+  .section { padding-block: var(--espace-6); }
+}
+.surtitre { font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--couleur-texte-2); margin-bottom: var(--espace-2); }
+
+/* ---------- En-tête ---------- */
+.entete { background: var(--couleur-fond); border-bottom: 1px solid var(--couleur-bordure); position: sticky; top: 0; z-index: 20; }
+.entete__barre { display: flex; align-items: center; justify-content: space-between; gap: var(--espace-3); min-height: 64px; }
+.entete__marque { display: flex; align-items: center; gap: var(--espace-2); font-family: var(--police-titres); font-size: 1.25rem; color: var(--couleur-principale); text-decoration: none; }
+.entete__marque img { height: 40px; width: auto; }
+.nav { display: none; }
+.nav a { color: var(--couleur-texte); text-decoration: none; padding: var(--espace-2) var(--espace-3); }
+.nav a:hover, .nav a[aria-current="page"] { color: var(--couleur-accent); }
+.entete__menu-bouton { display: inline-flex; align-items: center; gap: var(--espace-2); background: none; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-bouton); padding: var(--espace-2) var(--espace-3); cursor: pointer; }
+.entete[data-ouvert="true"] .entete__barre { flex-wrap: wrap; }
+.entete[data-ouvert="true"] .nav { display: flex; flex-direction: column; flex-basis: 100%; order: 3; border-top: 1px solid var(--couleur-bordure); padding-block: var(--espace-2) var(--espace-3); }
+@media (min-width: 900px) {
+  .nav { display: flex; gap: var(--espace-2); }
+  .entete__menu-bouton { display: none; }
+}
+
+/* ---------- Boutons ---------- */
+.bouton { display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); padding: 12px 20px; border-radius: var(--rayon-bouton); border: 1px solid transparent; font-weight: 600; text-decoration: none; cursor: pointer; min-height: 44px; }
+.bouton--accent { background: var(--couleur-accent); color: var(--couleur-accent-texte); }
+.bouton--accent:hover { filter: brightness(.94); }
+.bouton--secondaire { background: transparent; color: var(--couleur-principale); border-color: var(--couleur-principale); }
+.bouton--whatsapp { background: var(--couleur-whatsapp); color: #fff; }
+.bouton--whatsapp svg { width: 20px; height: 20px; fill: currentColor; }
+.bouton--large { width: 100%; }
+.bouton:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: var(--espace-5); }
+.hero__texte p { font-size: 1.1rem; color: var(--couleur-texte-2); max-width: 36ch; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: var(--espace-3); margin-top: var(--espace-4); }
+.hero__image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--rayon); }
+@media (min-width: 720px) { .hero .grille--2 { align-items: center; } }
+
+/* ---------- Cartes ---------- */
+.carte { background: #fff; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon); overflow: hidden; box-shadow: var(--ombre); display: flex; flex-direction: column; }
+.carte img { aspect-ratio: 4 / 3; object-fit: cover; }
+.carte__corps { padding: var(--espace-3); display: flex; flex-direction: column; gap: var(--espace-2); flex: 1; }
+.carte__prix { font-weight: 700; color: var(--couleur-principale); margin-top: auto; }
+.carte__prix small { font-weight: 400; color: var(--couleur-texte-2); }
+
+/* ---------- Infos pratiques ---------- */
+.infos { display: grid; gap: var(--espace-3); }
+.infos dt { font-weight: 600; }
+.infos dd { margin: 0 0 var(--espace-2); color: var(--couleur-texte-2); }
+@media (min-width: 720px) { .infos { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- Formulaire à étapes ---------- */
+.formulaire { background: #fff; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon); padding: var(--espace-4); max-width: 560px; }
+.formulaire__etapes { display: flex; gap: var(--espace-2); margin-bottom: var(--espace-4); font-size: .9rem; color: var(--couleur-texte-2); }
+.formulaire__etapes span { flex: 1; padding-bottom: var(--espace-2); border-bottom: 3px solid var(--couleur-bordure); }
+.formulaire__etapes span[aria-current="step"] { border-color: var(--couleur-accent); color: var(--couleur-principale); font-weight: 600; }
+.etape { display: none; }
+.etape[data-active="true"] { display: block; }
+.champ { display: flex; flex-direction: column; gap: var(--espace-1); margin-bottom: var(--espace-3); }
+.champ label { font-weight: 600; }
+.champ input, .champ select, .champ textarea { padding: 12px; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon); background: #fff; min-height: 44px; }
+.champ input:invalid:not(:placeholder-shown) { border-color: var(--couleur-alerte); }
+.champ--case { flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: var(--espace-2); }
+.champ--case input { min-height: 0; margin-top: 4px; }
+.champ--case label { flex: 1; font-weight: 400; }
+.champ--case .champ__erreur { flex-basis: 100%; }
+.champ__aide { font-size: .9rem; color: var(--couleur-texte-2); }
+.champ__erreur { font-size: .9rem; color: var(--couleur-alerte); display: none; }
+.champ[data-erreur="true"] .champ__erreur { display: block; }
+.formulaire__actions { display: flex; justify-content: space-between; gap: var(--espace-3); margin-top: var(--espace-4); }
+.rappel { display: flex; justify-content: space-between; align-items: center; gap: var(--espace-3); background: var(--couleur-fond-2); border-radius: var(--rayon); padding: var(--espace-2) var(--espace-3); margin-bottom: var(--espace-3); font-size: .95rem; }
+.rappel button { background: none; border: 0; color: var(--couleur-accent); text-decoration: underline; cursor: pointer; padding: 0; }
+.formulaire__whatsapp { margin-top: var(--espace-3); font-size: .95rem; color: var(--couleur-texte-2); text-align: left; }
+
+/* ---------- Bandeau DÉMO ---------- */
+.demo { background: var(--couleur-alerte); color: #fff; text-align: center; font-weight: 700; letter-spacing: .08em; padding: var(--espace-2); font-size: .9rem; }
+
+/* ---------- Messages ---------- */
+.message { padding: var(--espace-3); border-radius: var(--rayon); border: 1px solid; }
+.message--ok { border-color: var(--couleur-ok); color: var(--couleur-ok); background: #f0f8f3; }
+.message--alerte { border-color: var(--couleur-alerte); color: var(--couleur-alerte); background: #fbf1f0; }
+
+/* ---------- Pied de page ---------- */
+.pied { background: var(--couleur-principale); color: #f1efe9; padding-block: var(--espace-5); font-size: .95rem; }
+.pied a { color: #fff; }
+.pied__colonnes { display: grid; gap: var(--espace-4); }
+.pied__credits { margin-top: var(--espace-4); padding-top: var(--espace-3); border-top: 1px solid rgba(255, 255, 255, .15); font-size: .85rem; opacity: .8; }
+@media (min-width: 720px) { .pied__colonnes { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- WhatsApp flottant (mobile) ---------- */
+.whatsapp-flottant { position: fixed; right: var(--espace-3); bottom: var(--espace-3); z-index: 30; width: 56px; height: 56px; border-radius: 50%; background: var(--couleur-whatsapp); display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, .2); }
+.whatsapp-flottant svg { width: 30px; height: 30px; fill: #fff; }
+@media (min-width: 900px) { .whatsapp-flottant { display: none; } }

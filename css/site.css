@@ -1,0 +1,664 @@
+/* Site Erriane Foods — styles spécifiques */
+
+/* ===== ACCUEIL : LE HERO TRAVERSÉ PAR LA DIAGONALE =====
+   Un seul bloc plein écran. Un panneau sombre occupe la gauche, découpé en
+   biais : sa frontière descend du haut de la page vers le bas. Le titre, la
+   description et les deux espaces se répartissent de part et d'autre de
+   cette même ligne.
+
+   Les pourcentages du clip-path et les largeurs max vont ensemble : si on
+   redresse ou on penche la diagonale, il faut reprendre les deux.
+
+   La hauteur est plafonnee a 660px. Sans ce plafond, le hero s'etire a la
+   hauteur de la fenetre et le space-between creuse un grand vide entre le
+   titre et les deux espaces. Le plafond garde la diagonale telle quelle et
+   laisse apparaitre le debut des services. Regle a changer aux deux endroits :
+   ici et sur .accueil-heros__interieur. */
+.accueil-heros {
+  position: relative;
+  min-height: min(calc(100vh - 64px), 660px);
+  overflow: hidden;
+  background: var(--couleur-fond-2);
+}
+.accueil-heros__fond {
+  position: absolute;
+  inset: 0;
+  background: var(--couleur-principale);
+  clip-path: polygon(0 0, 62% 0, 46% 100%, 0 100%);
+}
+.accueil-heros__interieur {
+  position: relative;
+  min-height: min(calc(100vh - 64px), 660px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--espace-6);
+  padding-block: var(--espace-6);
+}
+
+/* --- Le titre et la description, sur la partie sombre --- */
+.accueil-intro { max-width: 52%; }
+.accueil-intro h1 {
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  max-width: 22ch;
+  margin-bottom: var(--espace-3);
+  color: #fff;
+}
+.accueil-intro p {
+  font-size: 1.02rem;
+  color: rgba(255, 255, 255, .72);
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* --- Les deux espaces, de part et d'autre de la diagonale --- */
+.accueil-choix {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--espace-4);
+}
+.accueil-choix__bloc {
+  display: block;
+  max-width: min(330px, 30%);
+  text-decoration: none;
+}
+.accueil-choix__bloc--entreprise { color: #fff; }
+.accueil-choix__bloc--particulier { color: var(--couleur-texte); }
+
+.accueil-choix__label {
+  font-size: .78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .6;
+  margin-bottom: var(--espace-2);
+}
+.accueil-choix__titre {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  margin-bottom: var(--espace-3);
+}
+.accueil-choix__bloc--entreprise .accueil-choix__titre { color: #fff; }
+.accueil-choix__bloc--particulier .accueil-choix__titre { color: var(--couleur-principale); }
+.accueil-choix__texte {
+  font-size: .96rem;
+  margin-bottom: var(--espace-4);
+}
+.accueil-choix__bloc--entreprise .accueil-choix__texte { color: rgba(255, 255, 255, .72); }
+.accueil-choix__bloc--particulier .accueil-choix__texte { color: var(--couleur-texte-2); }
+
+/* ===== LES BANDES DE FOND, COUPÉES EN BIAIS =====
+   Même motif que la diagonale du hero, en beaucoup plus doux : la pente
+   reste faible pour que les paragraphes ne soient jamais coupés en deux. */
+.section--alt {
+  position: relative;
+  background: none;
+}
+.section--alt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--couleur-fond-2);
+  clip-path: polygon(
+    0 clamp(20px, 4vw, 56px),
+    100% 0,
+    100% calc(100% - clamp(20px, 4vw, 56px)),
+    0 100%
+  );
+}
+.section--alt > .contenu { position: relative; }
+
+@media (max-width: 860px) {
+  /* Sur téléphone, une diagonale traversante mange le texte. On garde le
+     motif, mais chaque espace porte son propre fond. */
+  .accueil-heros { min-height: 0; background: var(--couleur-fond); }
+  .accueil-heros__fond { display: none; }
+  .accueil-heros__interieur { min-height: 0; }
+  .accueil-intro { max-width: none; }
+  .accueil-intro h1 { color: var(--couleur-principale); }
+  .accueil-intro p { color: var(--couleur-texte-2); }
+
+  .accueil-choix { flex-direction: column; gap: var(--espace-5); }
+  .accueil-choix__bloc {
+    max-width: none;
+    margin-inline: calc(-1 * var(--espace-3));
+    padding: var(--espace-5) var(--espace-3);
+  }
+  .accueil-choix__bloc--entreprise {
+    background: var(--couleur-principale);
+    clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
+  }
+  .accueil-choix__bloc--particulier { background: var(--couleur-fond-2); }
+}
+
+/* ===== SECTION SERVICES ===== */
+.services-grid {
+  display: grid;
+  gap: var(--espace-4);
+}
+@media (min-width: 720px) {
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.service-card {
+  text-align: center;
+  padding: var(--espace-4);
+}
+.service-card__icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--espace-3);
+  color: var(--couleur-accent);
+}
+.service-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--espace-2);
+}
+.service-card p {
+  font-size: .9rem;
+  color: var(--couleur-texte-2);
+}
+
+/* ===== L'accueil entreprise : les quatre services =====
+   Depuis le 27 octobre 2026, la page Entreprises présente les quatre services
+   et le catalogue vit sur « Nos coffrets ». Chaque service est une ligne, pas
+   une carte : on lit ce que c'est, puis on ouvre ce qui le concerne. Aligné à
+   gauche et sans symétrie, comme le reste du site. */
+.services-liste {
+  display: grid;
+  gap: var(--espace-3);
+  margin-top: var(--espace-5);
+}
+.service-ligne {
+  display: grid;
+  gap: var(--espace-2);
+  padding: var(--espace-4);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+}
+.service-ligne__icon {
+  width: 36px;
+  height: 36px;
+  color: var(--couleur-accent);
+}
+.service-ligne h3 {
+  font-size: 1.15rem;
+  margin-bottom: var(--espace-1);
+}
+.service-ligne p {
+  margin: 0;
+  font-size: .92rem;
+  color: var(--couleur-texte-2);
+  max-width: 58ch;
+}
+@media (min-width: 760px) {
+  .service-ligne {
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: var(--espace-4);
+  }
+  .service-ligne__lien { justify-self: end; }
+}
+
+/* La barre de rubriques du catalogue, en liens : elle mène aux sections de la
+   page. Même forme que les pastilles de la carte des particuliers. */
+a.puce {
+  display: inline-block;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+/* ===== PARTENAIRES ===== */
+/* Mur des partenaires. Les 32 logos viennent de la brochure du client et n'ont pas
+   du tout le même format : un carré et un très large n'ont pas le même poids à l'oeil.
+   D'où une grille de cases identiques, et chaque logo ajusté à l'intérieur. */
+.partenaires-logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--espace-2);
+  margin-top: var(--espace-4);
+}
+.partenaires-logos img {
+  width: 100%;
+  height: 86px;
+  padding: 12px;
+  object-fit: contain;
+  background: var(--couleur-fond);
+  border: 1px solid var(--couleur-bordure);
+}
+@media (max-width: 640px) {
+  .partenaires-logos { grid-template-columns: repeat(3, 1fr); }
+  .partenaires-logos img { height: 68px; padding: 8px; }
+}
+
+/* ===== COFFRETS (espace entreprises) ===== */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--couleur-principale);
+  color: var(--couleur-fond);
+  padding: var(--espace-6) 0;
+}
+.page-hero h1 {
+  color: var(--couleur-fond);
+  margin-bottom: var(--espace-2);
+}
+.page-hero p {
+  color: rgba(255,255,255,.75);
+  max-width: 48ch;
+}
+
+/* ---------- Les bandes ----------
+   Deux endroits que le traiteur remplit depuis son espace, onglet Médias : le
+   haut de la page Entreprises et une bande sur le côté. Sans média choisi, le
+   conteneur reste caché et les pages sont exactement comme avant. */
+
+/* La bande du haut se pose derrière le titre, avec un voile sombre par-dessus :
+   le titre doit rester lisible quelle que soit la photo. */
+.hero-bande {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-bande[hidden] { display: none; }
+.hero-bande img,
+.hero-bande video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-bande::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(43, 29, 20, .68);
+}
+.page-hero .contenu {
+  position: relative;
+  z-index: 1;
+}
+
+/* La bande latérale se pose à gauche, à mi-hauteur, tant que l'écran est assez
+   large et assez haut pour l'accueillir. Le compte en largeur : la bande fait
+   230 px plus 24 px de marge, donc 254 px, et la colonne de texte commence à
+   (largeur - 1100) / 2 ; il faut donc 1 608 px. Le compte en hauteur : la vidéo
+   verticale fait 409 px, la phrase soixante de plus, donc environ 470 px qui ne
+   doivent pas sortir de l'écran. En dessous de l'une ou de l'autre, la bande ne
+   s'affiche pas du tout : sur un téléphone il n'y a pas de marge latérale, et
+   une vidéo de 230 px de large n'aurait rien à y faire. Le bouton WhatsApp
+   occupe le coin droit, d'où la gauche. */
+.bande-cote {
+  position: fixed;
+  left: var(--espace-4);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  /* Sa largeur est celle de la marge blanche, pas une largeur décidée d'avance
+     (Massyl, 2 octobre 2026 : « elle s'adaptera à la bande blanche à gauche »).
+     La colonne de texte fait 1100 px et se centre, la barre de défilement de
+     Windows en prend une quinzaine : la marge vaut donc (100vw - 1120) / 2. On
+     en retire la marge de la bande et un peu d'air, et on plafonne à 230 px.
+     Résultat mesuré : 230 px sur un 1920, 172 sur un 1536, 124 sur un 1440,
+     115 sur un 1421, 87 sur un 1366. */
+  width: clamp(86px, calc((100vw - 1120px) / 2 - 36px), 230px);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  box-shadow: var(--ombre-card);
+  /* Elle attend que la bande du haut ait quitté l'écran (voir bandes.js) :
+     sans ça, les deux vidéos se recouvriraient en haut de la page. */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .18s linear;
+}
+.bande-cote--posee { opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .bande-cote { transition: none; }
+}
+.bande-cote[hidden] { display: none; }
+.bande-cote__media img,
+.bande-cote__media video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+.bande-cote__texte {
+  font-size: .85rem;
+  line-height: 1.45;
+  color: var(--couleur-texte);
+  margin: 0;
+  padding: var(--espace-2) var(--espace-3) var(--espace-3);
+}
+.bande-cote__texte[hidden] { display: none; }
+.bande-cote__fermer {
+  position: absolute;
+  top: var(--espace-1);
+  right: var(--espace-1);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: #fff;
+  background: rgba(43, 29, 20, .72);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.bande-cote__fermer:hover { background: var(--couleur-principale); }
+
+/* Pas de bande latérale là où elle n'a pas de place.
+   La largeur de la bande est calculée au-dessus : elle vaut 86 px quand la
+   fenêtre fait 1364 px, et moins au-delà. En dessous de ce point, elle serait
+   plus fine qu'une vignette et ne montrerait plus rien : elle se cache. Le
+   plancher de 86 px dans le calcul et ce seuil doivent rester d'accord : si l'un
+   bouge, l'autre aussi. 1366, le portable le plus courant, garde donc sa bande. */
+@media screen and (max-width: 1363px), screen and (max-height: 539px) {
+  .bande-cote { display: none; }
+}
+.catalogue-grid {
+  display: grid;
+  gap: var(--espace-4);
+}
+@media (min-width: 720px) {
+  .catalogue-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1000px) {
+  .catalogue-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.pack-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  overflow: hidden;
+  box-shadow: var(--ombre-card);
+  display: flex;
+  flex-direction: column;
+}
+.pack-card__img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  width: 100%;
+}
+.pack-card__corps {
+  padding: var(--espace-3) var(--espace-3) var(--espace-4);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.pack-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: var(--espace-1);
+}
+.pack-card__desc {
+  font-size: .88rem;
+  color: var(--couleur-texte-2);
+  margin-bottom: var(--espace-3);
+  flex: 1;
+}
+.pack-card__prix {
+  font-family: var(--police-titres);
+  font-size: 1.3rem;
+  color: var(--couleur-accent);
+  margin-bottom: var(--espace-3);
+}
+.pack-card__prix small {
+  font-family: var(--police-texte);
+  font-size: .78rem;
+  color: var(--couleur-texte-3);
+  font-weight: 400;
+}
+
+/* ===== FORMULAIRE COMMANDE ===== */
+.cmd-form {
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  padding: var(--espace-4);
+  max-width: 480px;
+}
+.cmd-form h3 {
+  margin-bottom: var(--espace-3);
+}
+
+/* ===== RÉSEAUX SOCIAUX ===== */
+.social-links {
+  display: flex;
+  gap: var(--espace-3);
+}
+.social-links a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: grid;
+  place-items: center;
+  transition: background .2s;
+}
+.social-links a:hover {
+  background: var(--couleur-accent);
+}
+.social-links svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+/* ===== La page Particuliers =====
+   Le produit phare en haut, la carte par rubrique (elle réutilise les cartes des
+   coffrets), et le renvoi vers la boutique Yassir en bas, demandé par le client. */
+.phare {
+  display: grid;
+  gap: var(--espace-4);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: #fff;
+  overflow: hidden;
+  margin-top: var(--espace-4);
+}
+@media (min-width: 720px) {
+  .phare { grid-template-columns: 280px 1fr; align-items: center; }
+}
+.phare__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.phare__texte { padding: var(--espace-3) var(--espace-4) var(--espace-4); }
+.phare__texte h2 { font-size: 1.5rem; margin-bottom: var(--espace-2); }
+.phare__prix { font-family: var(--police-titres); font-size: 1.3rem; color: var(--couleur-accent); margin-bottom: var(--espace-3); }
+
+.bande-yassir {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--espace-4);
+  background: var(--couleur-fond-2);
+  border: 1px solid var(--couleur-bordure);
+}
+.bande-yassir h2 { font-size: 1.2rem; margin-bottom: var(--espace-1); }
+.bande-yassir p { color: var(--couleur-texte-2); margin: 0; }
+
+/* ===== La carte des particuliers, en rubriques =====
+   Demande de Massyl le 27 octobre 2026 : « une segmentation un peu comme dans le
+   site Yassir », plutôt que vingt-cinq lignes à la suite. Les rubriques sont des
+   pastilles cliquables ; une seule s'affiche à la fois, et la galerie se redessine
+   sans recharger la page. « Tout » montre les vingt-cinq plats.
+   Le nom du plat est en Inter, pas en Anton : la police d'affiche fatigue sur une
+   grille. */
+.carte-nav {
+  display: flex;
+  gap: var(--espace-2);
+  overflow-x: auto;
+  padding-bottom: var(--espace-3);
+  margin-bottom: var(--espace-4);
+  border-bottom: 1px solid var(--couleur-bordure);
+  scrollbar-width: none;
+}
+.carte-nav::-webkit-scrollbar { display: none; }
+.puce {
+  flex: 0 0 auto;
+  border: 1px solid var(--couleur-bordure);
+  background: #fff;
+  color: var(--couleur-texte);
+  font-family: var(--police-texte);
+  font-size: .88rem;
+  padding: 8px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.puce:hover { border-color: var(--couleur-texte-3); }
+.puce.on {
+  background: var(--couleur-principale);
+  border-color: var(--couleur-principale);
+  color: #fff;
+}
+
+.galerie {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--espace-4);
+}
+.plat-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  overflow: hidden;
+  box-shadow: var(--ombre-card);
+}
+.plat-card__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+/* Un plat sans photo garde son cadre et le dit par une trame, plutôt que
+   d'emprunter une illustration qui ne serait pas celle du client. */
+.plat-card__img--vide {
+  background: var(--couleur-fond-2);
+  border-bottom: 1px dashed var(--couleur-bordure);
+}
+.plat-card__corps {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--espace-3) var(--espace-3) var(--espace-4);
+}
+.plat-card h3 {
+  font-family: var(--police-texte);
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 var(--espace-1);
+}
+.plat-card__flag {
+  display: inline-block;
+  font-size: .64rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--couleur-accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  vertical-align: 2px;
+}
+.plat-card__desc {
+  margin: 0 0 var(--espace-2);
+  color: var(--couleur-texte-2);
+  font-size: .86rem;
+  line-height: 1.45;
+}
+.plat-card__portion {
+  margin: 0 0 var(--espace-2);
+  color: var(--couleur-texte-3);
+  font-size: .76rem;
+}
+.plat-card__prix {
+  font-family: var(--police-titres);
+  font-size: 1.15rem;
+  color: var(--couleur-accent);
+  margin: auto 0 var(--espace-2);
+}
+.plat-card .bouton { width: 100%; }
+
+/* La photo d'un plat, en haut de sa fenêtre de quantité : une seule vue, pas de
+   diaporama, un plat n'étant pas une formule. */
+.plat-vue {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: var(--espace-3);
+}
+
+/* ===== Connecté veut dire entreprise =====
+   Le compte est réservé aux entreprises. Une fois connecté, le visiteur n'a donc
+   plus à voir l'entrée Particuliers : elle disparaît du menu, du pied de page et
+   des deux panneaux de l'accueil (décision de Massyl, 27 octobre 2026). La classe
+   est posée sur le body par signalerConnexion() dans js/ui.js. */
+body.est-connecte .lien-particuliers { display: none; }
+
+/* ===== Les ancres de l'en-tête =====
+   L'en-tête est fixe : sans cette marge, une ancre pose le titre de section
+   derrière la barre. 80 px = les 64 px de l'en-tête et un peu d'air. */
+section[id] { scroll-margin-top: 80px; }
+
+/* ===== L'en-tête porte les ancres de la page =====
+   Avec quatre entrées en plus de la marque, du panier et du compte, les libellés
+   se coupaient en deux lignes (« Pauses / café », « Créer un / compte ») dès
+   1440 px. On interdit la coupure et on empêche la zone du compte de se tasser. */
+.nav a { white-space: nowrap; }
+.entete__actions { flex: 0 0 auto; }
+#zone-compte .bouton { white-space: nowrap; }
+
+/* Quatre entrées de plus dans l'en-tête, et la barre débordait à 900 px, juste au
+   moment où le menu de bureau apparaît. Le menu de bureau attend donc 1100 px ;
+   en dessous, c'est le bouton hamburger qui prend le relais. */
+@media (max-width: 1099px) {
+  .nav { display: none; }
+  .entete__menu-bouton { display: inline-flex; }
+}
+
+/* Le menu de la page Entreprises a deux états. Un visiteur non connecté voit
+   l'entrée normale du site, Entreprises et Particuliers, exactement comme avant.
+   Un client connecté est chez lui : le menu mène aux rubriques de la page, et
+   l'entrée Particuliers n'a plus de sens (Massyl, 27 octobre 2026). */
+.nav-espace { display: none; }
+body.est-connecte .nav-espace { display: inline-block; }
+body.est-connecte .nav-public { display: none; }
+
+/* ===== La page Contact =====
+   Créée le 27 octobre 2026 : le lien Contact menait à une section de bas de page
+   ou, pour un client connecté, nulle part. La page porte l'adresse, les
+   téléphones, l'email et le WhatsApp. */
+.contact-grille { display: grid; gap: var(--espace-5); }
+@media (min-width: 800px) { .contact-grille { grid-template-columns: 1fr 1fr; } }
+.contact-titre { font-size: 1.15rem; margin: 0 0 var(--espace-3); }
+.contact-liste { margin: 0; }
+.contact-liste dt {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--couleur-texte-3); margin-top: var(--espace-3);
+}
+.contact-liste dt:first-child { margin-top: 0; }
+.contact-liste dd { margin: 4px 0 0; font-size: .98rem; line-height: 1.5; }
+.contact-liste a { color: var(--couleur-texte); text-decoration: underline; text-decoration-color: var(--couleur-bordure); }
+.contact-liste a:hover { color: var(--couleur-accent); }
+.contact-plan {
+  align-self: start;
+  background: var(--couleur-fond-2);
+  border: 1px solid var(--couleur-bordure);
+  padding: var(--espace-4);
+}
+.contact-plan p { color: var(--couleur-texte-2); margin: 0 0 var(--espace-4); }
+.contact-plan__note { font-size: .8rem; color: var(--couleur-texte-3); margin: var(--espace-3) 0 0; }
+
+/* La carte de la page Contact : l'adresse interrogée par son texte, pas de
+   coordonnée inventée. Le repère exact du client la remplacera. */
+.contact-plan__carte {
+  margin: 0 0 var(--espace-4);
+  border: 1px solid var(--couleur-bordure);
+  line-height: 0;
+}

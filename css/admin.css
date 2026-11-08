@@ -1,0 +1,754 @@
+/* Erriane Foods — Espace traiteur.
+   Des écrans de travail, pas une vitrine : fond blanc, tableaux denses,
+   aucune décoration. Les couleurs viennent de tokens.css. */
+
+/* ---------- En-tête ---------- */
+.adm-espace {
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-2);
+  padding-left: var(--espace-3);
+  border-left: 1px solid var(--couleur-bordure);
+}
+
+/* Une fiche de commande porte plus de contenu qu'une fenêtre de boutique :
+   elle a droit à plus de largeur. Le reste des fenêtres ne bouge pas. */
+body[data-espace="admin"] .ov__boite { max-width: 620px; }
+/* La fenêtre d'une nouvelle commande porte une liste : client, lignes, prix,
+   livraison. À 620 px, chaque ligne se casserait en trois. */
+body[data-espace="admin"] .ov__boite--large { max-width: 900px; }
+
+/* ---------- Une ligne de l'onglet Livreurs ----------
+   Le nom s'y corrige sur place, comme le prix dans le catalogue : le traiteur
+   répare une faute de frappe sans ouvrir de fenêtre. La ligne « Sans livreur »
+   est teintée, parce que c'est elle qui coûte une livraison oubliée. */
+.liv-nom {
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 600;
+  padding: 6px 9px;
+  width: 100%;
+  min-width: 120px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+}
+.liv-ligne--nu { background: rgba(206, 17, 38, .05); }
+
+/* ---------- Une ligne d'une commande posée par le traiteur ----------
+   Le coffret, sa quantité, son prix, et ce que ça fait. Le total est aligné à
+   droite et suit la même largeur d'une ligne à l'autre : le traiteur compare ses
+   lignes d'un coup d'oeil. */
+.cmd-ligne {
+  display: grid;
+  grid-template-columns: 1fr 84px 120px 110px auto;
+  gap: var(--espace-2);
+  align-items: center;
+  padding: var(--espace-2) 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.cmd-ligne:last-of-type { border-bottom: 0; }
+.cmd-ligne select,
+.cmd-ligne input {
+  font: inherit;
+  font-size: .92rem;
+  padding: 7px 10px;
+  width: 100%;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+}
+.cmd-ligne__total { text-align: right; font-weight: 600; }
+/* Sur un téléphone, une ligne passe sur deux rangées : le coffret et sa
+   quantité d'un côté, le prix et le total de l'autre. */
+@media (max-width: 640px) {
+  .cmd-ligne { grid-template-columns: 1fr 84px; }
+  .cmd-ligne__total { text-align: left; }
+}
+
+@media (max-width: 700px) {
+  .adm-espace { display: none; }
+}
+
+/* ---------- Onglets ---------- */
+.adm-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+  margin-top: var(--espace-4);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.adm-onglet {
+  font: inherit;
+  font-size: .92rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: var(--espace-2) var(--espace-3);
+  margin-bottom: -1px;
+  color: var(--couleur-texte-2);
+}
+.adm-onglet:hover { color: var(--couleur-texte); }
+.adm-onglet.on {
+  color: var(--couleur-texte);
+  border-bottom-color: var(--couleur-accent);
+}
+
+.adm-panneau[hidden] { display: none; }
+
+/* ---------- Les chiffres du haut ---------- */
+.adm-chiffres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-4);
+  margin: var(--espace-4) 0;
+}
+.adm-chiffre {
+  border-left: 3px solid var(--couleur-bordure);
+  padding-left: var(--espace-3);
+}
+.adm-chiffre b {
+  display: block;
+  font-family: var(--police-titres);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+.adm-chiffre span {
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+}
+.adm-chiffre--accent { border-left-color: var(--couleur-accent); }
+
+/* ---------- Les filtres ---------- */
+.adm-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-3);
+  align-items: flex-end;
+  margin: var(--espace-4) 0 var(--espace-2);
+}
+.adm-filtres label {
+  display: block;
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+  margin-bottom: var(--espace-1);
+}
+.adm-filtres select,
+.adm-filtres input {
+  font: inherit;
+  font-size: .92rem;
+  padding: 7px 10px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+.adm-filtres input[type="search"] { min-width: 210px; }
+/* Sur un téléphone, on ne vise pas un filtre au doigt : chaque champ prend sa
+   ligne. Sans ça, le champ de recherche garde sa largeur mini et fait glisser
+   toute la page de côté. */
+@media (max-width: 560px) {
+  .adm-filtres { display: block; }
+  .adm-filtres > div { margin-bottom: var(--espace-3); }
+  .adm-filtres select,
+  .adm-filtres input,
+  .adm-filtres .bouton { width: 100%; }
+  .adm-filtres input[type="search"] { min-width: 0; }
+}
+.adm-compte {
+  font-size: .85rem;
+  color: var(--couleur-texte-2);
+  margin: 0 0 var(--espace-3);
+}
+
+/* ---------- Les tableaux de l'espace traiteur ----------
+   Le traiteur travaille souvent depuis son téléphone. Un tableau à peu de
+   colonnes se laisse large et glisse sous le doigt, plutôt que de tasser le
+   texte. Celui des commandes en a neuf : là, on change de forme (plus bas). */
+.adm-tableau {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sur un téléphone, une commande devient une fiche : tout se lit de haut en
+   bas, sans rien faire glisser de côté. Chaque valeur garde son étiquette,
+   posée juste au-dessus. */
+@media screen and (max-width: 700px) {
+  .adm-tableau--fiches { overflow: visible; }
+  .adm-tableau--fiches .adm-table thead { display: none; }
+  .adm-tableau--fiches .adm-table,
+  .adm-tableau--fiches .adm-table tbody,
+  .adm-tableau--fiches .adm-table tr,
+  .adm-tableau--fiches .adm-table td { display: block; width: auto; }
+  .adm-tableau--fiches .adm-table tr {
+    border: 1px solid var(--couleur-bordure);
+    border-radius: var(--rayon-carte);
+    padding: var(--espace-3);
+    margin-bottom: var(--espace-3);
+  }
+  .adm-tableau--fiches .adm-table td {
+    padding: 3px 0;
+    border: 0;
+    font-size: .92rem;
+  }
+  .adm-tableau--fiches .adm-table td::before {
+    content: attr(data-libelle);
+    display: block;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--couleur-texte-2);
+  }
+  .adm-tableau--fiches .adm-table td[data-libelle=""]::before { content: none; }
+  /* La référence ouvre la fiche : elle se passe d'étiquette. */
+  .adm-tableau--fiches .adm-table td:first-child {
+    font-family: var(--police-titres);
+    font-size: 1.05rem;
+    padding-bottom: var(--espace-2);
+    margin-bottom: var(--espace-2);
+    border-bottom: 1px solid var(--couleur-bordure);
+  }
+  .adm-tableau--fiches .adm-table td:first-child::before { content: none; }
+  .adm-tableau--fiches .adm-table td[data-libelle=""] { margin-top: var(--espace-2); }
+  .adm-tableau--fiches .adm-table td[data-libelle=""] .bouton { width: 100%; }
+}
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+.adm-table th {
+  text-align: left;
+  white-space: nowrap;
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+  padding: 0 var(--espace-3) var(--espace-2);
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.adm-table td {
+  padding: var(--espace-3);
+  border-bottom: 1px solid var(--couleur-bordure);
+  vertical-align: top;
+}
+.adm-table tbody tr:hover td { background: var(--couleur-fond-3); }
+.adm-sous {
+  display: block;
+  font-size: .78rem;
+  color: var(--couleur-texte-3);
+  margin-top: 2px;
+}
+.adm-vide {
+  padding: var(--espace-5);
+  text-align: center;
+  color: var(--couleur-texte-2);
+  border: 1px dashed var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+}
+
+/* ---------- La fiche d'une commande, dans la fenêtre ---------- */
+.adm-fiche {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--espace-3);
+  margin-bottom: var(--espace-4);
+}
+.adm-fiche span {
+  display: block;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+}
+.adm-fiche b { font-weight: 500; }
+.adm-ligne {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  padding: var(--espace-2) 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+  font-size: .92rem;
+}
+.adm-totaux {
+  margin-top: var(--espace-4);
+  padding-top: var(--espace-3);
+  border-top: 1px solid var(--couleur-bordure);
+}
+.adm-totaux div {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: .92rem;
+}
+.adm-totaux div:last-child {
+  font-weight: 600;
+  font-size: 1.02rem;
+  margin-top: var(--espace-2);
+  padding-top: var(--espace-2);
+  border-top: 1px solid var(--couleur-bordure);
+}
+.adm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  margin-top: var(--espace-4);
+  padding-top: var(--espace-3);
+  border-top: 1px solid var(--couleur-bordure);
+}
+.adm-actions__groupe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  align-items: flex-end;
+}
+.adm-actions label {
+  display: block;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+  margin-bottom: var(--espace-1);
+}
+.adm-actions input {
+  font: inherit;
+  font-size: .9rem;
+  padding: 6px 9px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+
+/* ---------- Titres et blocs des écrans de travail ---------- */
+.adm-titre {
+  font-family: var(--police-titres);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 1.02rem;
+  margin: var(--espace-5) 0 var(--espace-2);
+}
+.adm-titre:first-child { margin-top: 0; }
+.adm-aide {
+  font-size: .85rem;
+  color: var(--couleur-texte-2);
+  margin: 0 0 var(--espace-3);
+  max-width: 68ch;
+}
+.adm-bloc {
+  border: 1px solid var(--couleur-bordure);
+  padding: var(--espace-4);
+  margin-top: var(--espace-4);
+}
+
+/* ---------- Ce qui est servi, ligne par ligne ----------
+   Trois champs par ligne : ce que le client lira et ce que la cuisine
+   préparera. Ils se remplissent à la suite, sans quitter la fiche. */
+.adm-compo {
+  border-top: 1px solid var(--couleur-bordure);
+  padding: var(--espace-2) 0;
+}
+.adm-compo__tete {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espace-3);
+  font-size: .92rem;
+}
+.adm-compo__champs {
+  display: grid;
+  /* Cinq champs maintenant (entrée, plat, garnitures, dessert, boisson) : la
+     grille se répartit d'elle-même au lieu de tenir trois colonnes fixes. */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--espace-2);
+  margin-top: var(--espace-2);
+}
+.adm-compo__champs input {
+  font: inherit;
+  font-size: .85rem;
+  width: 100%;
+  padding: 6px 8px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+@media (max-width: 560px) {
+  .adm-compo__champs { grid-template-columns: 1fr; }
+}
+
+/* ---------- Soldes, totaux, actions en ligne ---------- */
+.adm-solde--du { color: var(--couleur-alerte); }
+.adm-solde--ok { color: var(--couleur-ok); }
+.adm-table__total td {
+  border-top: 2px solid var(--couleur-texte);
+  border-bottom: 0;
+  font-weight: 500;
+}
+.adm-actions-cellule {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+}
+
+/* ---------- La feuille de production ----------
+   Elle ne s'affiche jamais à l'écran : c'est un document, on l'imprime. Le
+   traiteur la relit sur papier, pas sur son téléphone. */
+.adm-impression {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espace-3);
+  margin-top: var(--espace-5);
+  padding: var(--espace-3) var(--espace-4);
+  background: var(--couleur-fond-2);
+  border-left: 3px solid var(--couleur-accent);
+}
+.adm-impression b { display: block; }
+.adm-impression span {
+  font-size: .85rem;
+  color: var(--couleur-texte-2);
+}
+.feuille-print { display: none; }
+.feuille {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  padding: var(--espace-4);
+}
+.feuille__jour {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--espace-3);
+  font-family: var(--police-titres);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: .95rem;
+  margin: var(--espace-4) 0 var(--espace-2);
+}
+.feuille__jour span {
+  font-family: var(--police-texte);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: .85rem;
+  color: var(--couleur-texte-2);
+}
+.feuille__compo {
+  display: block;
+  font-size: .82rem;
+  color: var(--couleur-texte-2);
+  margin-top: 2px;
+}
+.feuille__tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--espace-3);
+  border-bottom: 2px solid var(--couleur-texte);
+  padding-bottom: var(--espace-2);
+  margin-bottom: var(--espace-4);
+}
+.feuille__tete h2 {
+  font-family: var(--police-titres);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  margin: 0;
+}
+.feuille__bloc {
+  border: 1px solid var(--couleur-bordure);
+  padding: var(--espace-3);
+  margin-bottom: var(--espace-3);
+}
+.feuille__bloc h3 {
+  font-size: .95rem;
+  margin: 0 0 var(--espace-2);
+}
+.feuille__bloc h3 span {
+  font-weight: 400;
+  font-size: .85rem;
+  color: var(--couleur-texte-2);
+}
+.feuille__bloc ul {
+  margin: 0;
+  padding-left: var(--espace-4);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.feuille__total {
+  display: flex;
+  justify-content: space-between;
+  font-size: .95rem;
+  border-top: 1px solid var(--couleur-bordure);
+  padding-top: var(--espace-3);
+}
+
+/* ---------- L'onglet Catalogue ----------
+   Une ligne par coffret : sa photo, son nom, son prix, puis les gestes. Le prix
+   se corrige sur place, sans ouvrir de fenêtre : c'est ce qui change le plus
+   souvent. Le reste passe par « Modifier », qui ouvre la fiche du coffret. */
+.cat-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-3);
+  padding: var(--espace-3) 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+/* Un coffret caché reste là, en retrait : le traiteur doit pouvoir le
+   remontrer, et voir d'un coup d'œil ce qui ne s'affiche plus. */
+.cat-ligne--cache { opacity: .55; }
+.cat-ligne__vue {
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--couleur-bordure);
+  background: var(--couleur-fond-2);
+}
+.cat-ligne__nom { flex: 1 1 200px; min-width: 150px; }
+.cat-ligne__nom b { font-weight: 600; }
+.cat-ligne__nom .adm-sous { margin-top: 3px; }
+.cat-ligne__prix label {
+  display: block;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--couleur-texte-2);
+  margin-bottom: var(--espace-1);
+}
+.cat-ligne__duo {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+}
+.cat-ligne__prix input {
+  font: inherit;
+  font-size: .9rem;
+  width: 116px;
+  padding: 6px 9px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+.cat-ligne__vu {
+  font-size: .82rem;
+  color: var(--couleur-texte-2);
+  white-space: nowrap;
+}
+.cat-ligne__vu small { color: var(--couleur-texte-3); }
+.cat-ligne__demande { color: var(--couleur-alerte); }
+/* Les gestes passent à la ligne sous le coffret : sur un téléphone, ils
+   resteraient sinon hors de l'écran. */
+.cat-ligne__actes {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+}
+
+/* Le choix de la photo, dans la fiche du coffret : les vignettes du site,
+   cliquables. Elles sont montrées petites et se chargent au défilement. */
+.cat-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: var(--espace-2);
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  background: var(--couleur-fond-2);
+}
+.cat-photo {
+  padding: 0;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+.cat-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cat-photo:hover { border-color: var(--couleur-texte-2); }
+.cat-photo.on {
+  border-color: var(--couleur-accent);
+  box-shadow: 0 0 0 2px var(--couleur-accent);
+}
+
+/* Les quatre photos de présentation : un rang, une liste, un aperçu. Le rang
+   sert de titre, la liste de choix, l'aperçu de contrôle : le traiteur voit ce
+   qu'il a pris sans quitter la fenêtre. */
+.cat-vue {
+  display: grid;
+  grid-template-columns: 74px 1fr 72px;
+  gap: var(--espace-2);
+  align-items: center;
+  padding: var(--espace-2) 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+.cat-vue:last-child { border-bottom: 0; }
+.cat-vue__rang { font-size: .85rem; color: var(--couleur-texte-3); }
+.cat-vue__vue {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--couleur-bordure);
+  background: #fff;
+  overflow: hidden;
+}
+.cat-vue__vue img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* La fiche d'un coffret : les champs prennent la place qu'il faut, et le texte
+   long a droit à un vrai champ de texte. */
+#ov-cat .adm-actions > div { flex: 1 1 220px; }
+.adm-actions select,
+.adm-actions textarea {
+  font: inherit;
+  font-size: .9rem;
+  padding: 6px 9px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+.adm-actions textarea { width: 100%; resize: vertical; }
+
+/* ---------- Les bandes du site : le choix du traiteur ---------- */
+.med-bloc {
+  border: 1px solid var(--couleur-bordure);
+  padding: var(--espace-4);
+  margin-top: var(--espace-3);
+  background: var(--couleur-fond-3);
+}
+.med-bloc__duo {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) 1fr;
+  gap: var(--espace-4);
+  align-items: start;
+}
+.med-champ + .med-champ { margin-top: var(--espace-3); }
+.med-champ .adm-aide { margin: var(--espace-1) 0 0; font-size: .8rem; }
+.med-bloc__suite {
+  font-size: .88rem;
+  color: var(--couleur-texte-2);
+  margin: var(--espace-4) 0 0;
+}
+.med-apercu--vide {
+  display: grid;
+  place-items: center;
+  font-size: .85rem;
+  color: var(--couleur-texte-3);
+}
+.med-bloc__duo label { display: block; margin-bottom: var(--espace-1); font-size: .9rem; }
+.med-bloc__duo select,
+.med-bloc__duo input[type="text"] {
+  font: inherit;
+  font-size: .9rem;
+  width: 100%;
+  padding: 6px 9px;
+  color: var(--couleur-texte);
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+.med-apercu {
+  border: 1px solid var(--couleur-bordure);
+  background: #fff;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+/* L'aperçu de la bande latérale est vertical, comme le média le sera sur le
+   site : juger une vidéo verticale dans un cadre couché ne veut rien dire. */
+.med-apercu--vertical {
+  aspect-ratio: 9 / 16;
+  max-width: 150px;
+}
+.med-apercu img,
+.med-apercu video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.med-bloc__actes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  margin-top: var(--espace-3);
+}
+@media screen and (max-width: 700px) {
+  .med-bloc__duo { grid-template-columns: 1fr; }
+}
+
+/* ---------- À l'impression ----------
+   Un seul document à la fois : celui que le traiteur a demandé d'imprimer. La
+   marque data-impression dit lequel, et les éléments d'interface portent
+   no-print. Sans cette marque, un Ctrl+P imprime l'écran de travail tel quel. */
+@media print {
+  .entete,
+  .pied,
+  .adm-onglets,
+  .no-print { display: none !important; }
+
+  .section { padding: 0 !important; }
+  .adm-panneau[hidden] { display: none !important; }
+
+  body[data-impression="feuille"] .adm-panneau:not(#panneau-commandes) { display: none !important; }
+
+  .feuille { border: 0; border-radius: 0; padding: 0; }
+  /* Sur le papier, tout doit tenir : pas de colonne à faire défiler. */
+  .adm-tableau { overflow: visible; }
+  .feuille__bloc,
+  .feuille__total,
+  .feuille__jour { break-inside: avoid; }
+
+  /* La feuille ne sort que si c'est elle qu'on imprime. */
+  .feuille-print { display: none; }
+  body[data-impression="feuille"] .feuille-print { display: block !important; }
+
+  /* A4, comme le papier du traiteur. Sans size, le navigateur imprime en
+     format américain. */
+  @page { size: A4 portrait; margin: 14mm; }
+}
+
+/* ===== La bannière de solde =====
+   L'argent qui dort, en une ligne, avant tout le reste. Rouge tant qu'il reste
+   quelque chose à encaisser, vert quand tout est rentré. */
+.adm-solde-bande {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--espace-3);
+  padding: 14px 18px;
+  border-radius: var(--rayon-carte);
+  margin-bottom: var(--espace-4);
+  border: 1px solid transparent;
+}
+.adm-solde-bande b {
+  font-family: var(--police-titres);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+.adm-solde-bande span { font-size: .92rem; }
+.adm-solde-bande--du { background: #FDECEC; border-color: #E4B4B4; color: #8B1A1A; }
+.adm-solde-bande--ok { background: #EAF6EE; border-color: #B9DCC7; color: #1A7A44; }

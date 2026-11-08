@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Photo en préparation">
+  <rect width="1600" height="900" fill="#F8F6F1"/>
+  <path d="M0 0h760L560 900H0z" fill="#EFE8DD"/>
+  <path d="M760 0h4L564 900h-4z" fill="#E0D8CC"/>
+  <rect x="590" y="516" width="420" height="4" fill="#CE1126" opacity=".45"/>
+  <text x="800" y="462" text-anchor="middle" fill="#8C7F70"
+        font-family="Arial, Helvetica, sans-serif" font-size="58" letter-spacing="10">PHOTO EN PRÉPARATION</text>
+  <text x="800" y="584" text-anchor="middle" fill="#B3A897"
+        font-family="Arial, Helvetica, sans-serif" font-size="34" letter-spacing="8">ERRIANE FOODS</text>
+</svg>

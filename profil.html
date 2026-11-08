@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon profil · Erriane Foods</title>
+<meta name="description" content="Vos informations de livraison et votre solde Erriane Foods.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="img/logo-erriane.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css?v=20261109a">
+<link rel="stylesheet" href="css/base.css?v=20261109a">
+<link rel="stylesheet" href="css/site.css?v=20261109a">
+<link rel="stylesheet" href="css/boutique.css?v=20261109a">
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<header class="entete">
+  <div class="entete__barre contenu">
+    <a href="index.html" class="entete__marque">
+      <img src="img/logo-erriane.png" alt="Erriane Foods">
+      <span>Erriane<span style="color:var(--couleur-accent)">Foods</span></span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="entreprises.html">Nos coffrets</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="entete__actions">
+      <button type="button" class="panier-btn" id="panier-bouton" onclick="ouvrirPanier()" aria-label="Voir mon panier">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="panier-btn__badge" id="panier-badge"></span>
+      </button>
+      <div id="zone-compte"></div>
+    </div>
+    <button class="entete__menu-bouton" aria-label="Ouvrir le menu" aria-expanded="false" onclick="basculerMenu(this)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- MON PROFIL -->
+<section class="section">
+  <div class="contenu">
+    <div class="surtitre">Mon compte</div>
+    <h1>Mon profil</h1>
+    <p style="color:var(--couleur-texte-2);max-width:56ch;margin-bottom:var(--espace-4)">Ces informations sont celles que nous utilisons pour vous livrer et vous joindre.</p>
+    <div id="zone-profil"></div>
+  </div>
+</section>
+
+<!-- PIED DE PAGE -->
+<footer class="pied">
+  <div class="contenu">
+    <div class="pied__colonnes">
+      <div>
+        <b style="font-family:var(--police-titres);font-size:1.1rem">Erriane Foods</b>
+        <p style="margin-top:var(--espace-2);font-size:.88rem;opacity:.8">Traiteur depuis 2004. Kouba, Alger.</p>
+      </div>
+      <div>
+        <b style="font-size:.85rem;letter-spacing:.06em;text-transform:uppercase">Navigation</b>
+        <nav style="margin-top:var(--espace-2);display:flex;flex-direction:column;gap:var(--espace-2);font-size:.9rem">
+          <a href="index.html">Accueil</a>
+          <a href="entreprises.html">Espace Entreprises</a>
+          <a href="particuliers.html" class="lien-particuliers">Espace Particuliers</a>
+        </nav>
+      </div>
+      <div>
+        <b style="font-size:.85rem;letter-spacing:.06em;text-transform:uppercase">Mon compte</b>
+        <nav style="margin-top:var(--espace-2);display:flex;flex-direction:column;gap:var(--espace-2);font-size:.9rem">
+          <a href="profil.html">Mon profil</a>
+          <a href="commandes.html">Mes commandes</a>
+          <a href="paiements.html">Mes paiements</a>
+        </nav>
+      </div>
+    </div>
+    <div class="pied__credits">&copy; Erriane Foods. Tous droits réservés. &middot; <a href="confidentialite.html">Confidentialité</a></div>
+  </div>
+</footer>
+
+<script src="js/amorce.js?v=20261109a"></script>
+<script src="js/data.js?v=20261109a"></script>
+<script src="js/ui.js?v=20261109a"></script>
+<script src="js/compte.js?v=20261109a"></script>
+<script src="js/panier.js?v=20261109a"></script>
+<script src="js/client.js?v=20261109a"></script>
+</body>
+</html>

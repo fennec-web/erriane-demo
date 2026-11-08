@@ -1,0 +1,43 @@
+/* Tokens Erriane Foods — Site de production
+   Fond blanc sobre, professionnel. Couleurs de la marque Erriane. */
+
+:root {
+  /* Couleurs */
+  --couleur-principale: #2B1D14;     /* encre, titres, texte principal */
+  --couleur-accent: #CE1126;         /* rouge Erriane, boutons d'action */
+  --couleur-accent-hover: #A50D1E;   /* rouge assombri au survol */
+  --couleur-accent-texte: #ffffff;   /* texte sur bouton accent */
+  --couleur-fond: #ffffff;           /* fond de page — blanc sobre */
+  --couleur-fond-2: #F8F6F1;         /* fond des sections alternées */
+  --couleur-fond-3: #FEF9F3;         /* fond très clair, cards */
+  --couleur-texte: #2B1D14;
+  --couleur-texte-2: #6B5D4F;        /* texte secondaire */
+  --couleur-texte-3: #9A8C7C;        /* texte muted */
+  --couleur-bordure: #E5DFD6;        /* bordures subtiles */
+  --couleur-ligne: rgba(43,29,20,.12);
+  --couleur-ok: #1a7a44;
+  --couleur-alerte: #b3820a;
+  --couleur-whatsapp: #25D366;
+
+  /* Typographie (Google Fonts) */
+  --police-titres: "Anton", "Impact", sans-serif;
+  --police-texte: "Inter", system-ui, Arial, sans-serif;
+
+  /* Formes — coins peu arrondis, sobre */
+  --rayon: 6px;
+  --rayon-bouton: 8px;
+  --rayon-carte: 12px;
+  --ombre: 0 1px 3px rgba(0,0,0,.06);
+  --ombre-card: 0 2px 8px rgba(0,0,0,.06);
+
+  /* Espacements */
+  --espace-1: 4px;
+  --espace-2: 8px;
+  --espace-3: 16px;
+  --espace-4: 24px;
+  --espace-5: 40px;
+  --espace-6: 64px;
+
+  /* Largeur de contenu */
+  --largeur-max: 1100px;
+}

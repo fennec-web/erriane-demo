@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace traiteur · Erriane Foods</title>
+<meta name="description" content="Suivi des commandes Erriane Foods.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="../img/logo-erriane.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="stylesheet" href="../css/boutique.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body data-espace="admin">
+
+<!-- EN-TÊTE
+
+     Cette page n'est pas encore protégée par un mot de passe : elle vit à
+     l'adresse /admin/, elle n'est liée depuis aucune page du site et elle
+     demande aux moteurs de recherche de ne pas l'indexer. Le vrai compte du
+     traiteur, avec email et mot de passe, arrivera avec la base de données.
+     Les données lues ici sont celles du navigateur, comme partout sur ce site. -->
+<header class="entete">
+  <div class="entete__barre contenu">
+    <a href="../index.html" class="entete__marque">
+      <img src="../img/logo-erriane.png" alt="Erriane Foods">
+      <span>Erriane<span style="color:var(--couleur-accent)">Foods</span></span>
+    </a>
+    <span class="adm-espace">Espace traiteur</span>
+    <div class="entete__actions">
+      <a class="bouton bouton--secondaire bouton--petit" href="../index.html">Voir le site</a>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="contenu">
+
+    <div class="adm-onglets" role="tablist">
+      <button type="button" class="adm-onglet on" data-onglet="commandes" onclick="ongletAdmin('commandes')">Commandes</button>
+      <button type="button" class="adm-onglet" data-onglet="clients" onclick="ongletAdmin('clients')">Clients</button>
+      <button type="button" class="adm-onglet" data-onglet="livreurs" onclick="ongletAdmin('livreurs')">Livreurs</button>
+      <button type="button" class="adm-onglet" data-onglet="catalogue" onclick="ongletAdmin('catalogue')">Catalogue</button>
+      <button type="button" class="adm-onglet" data-onglet="paiements" onclick="ongletAdmin('paiements')">Paiements</button>
+      <button type="button" class="adm-onglet" data-onglet="medias" onclick="ongletAdmin('medias')">Médias</button>
+    </div>
+
+    <!-- ============ COMMANDES ============
+         La liste, les filtres, et l'impression de la feuille de production.
+         La feuille suit la sélection : elle ne garde que les commandes
+         validées de ce qui est affiché. -->
+    <div class="adm-panneau" id="panneau-commandes">
+
+      <div class="adm-chiffres no-print" id="adm-chiffres"></div>
+
+      <div class="adm-filtres no-print">
+        <div>
+          <label for="f-statut">Statut</label>
+          <select id="f-statut" onchange="majFiltre('fStatut', this.value)">
+            <option value="tous">Toutes</option>
+            <option value="attente">En attente</option>
+            <option value="confirmee">Validées</option>
+            <option value="reportee">Autre date proposée</option>
+            <option value="annulee">Annulées</option>
+          </select>
+        </div>
+        <div>
+          <label for="f-livreur">Livreur</label>
+          <!-- La liste des noms est écrite par le script (voir
+               remplirFiltreLivreurs, admin-commandes.js) : elle suit ce que le
+               traiteur inscrit dans l'onglet Livreurs. -->
+          <select id="f-livreur" onchange="majFiltre('fLivreur', this.value)"></select>
+        </div>
+        <div>
+          <label for="f-du">Livraison du</label>
+          <input type="date" id="f-du" onchange="majFiltre('du', this.value)">
+        </div>
+        <div>
+          <label for="f-au">au</label>
+          <input type="date" id="f-au" onchange="majFiltre('au', this.value)">
+        </div>
+        <div>
+          <label for="f-q">Rechercher</label>
+          <input type="search" id="f-q" placeholder="Référence, établissement, lieu" oninput="majFiltre('q', this.value)">
+        </div>
+        <button type="button" class="bouton bouton--secondaire bouton--petit" onclick="viderFiltres()">Tout afficher</button>
+      </div>
+
+      <p class="adm-compte no-print" id="adm-compte"></p>
+
+      <div class="no-print" id="adm-liste"></div>
+
+      <div class="adm-impression no-print">
+        <div>
+          <b>Feuille de production</b>
+          <span>Les commandes validées de la sélection affichée : <span id="feuille-resume"></span>.
+          Pour un seul jour, réglez « Livraison du » et « au » sur le même jour.</span>
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="imprimer('feuille')">Imprimer la feuille de production</button>
+      </div>
+
+      <div class="feuille-print" id="feuille-print">
+        <div class="feuille" id="feuille-corps"></div>
+      </div>
+    </div>
+
+    <!-- ============ CLIENTS ============
+         Les comptes clients. Beaucoup de clients d'Erriane commandent par
+         téléphone : le traiteur inscrit le compte lui-même, puis pose la
+         commande. Elle a la forme de celles du site, donc elle se retrouve dans
+         l'espace du client, et se traite comme les autres dans l'onglet
+         Commandes. -->
+    <div class="adm-panneau" id="panneau-clients" hidden>
+
+      <div class="adm-impression no-print">
+        <div>
+          <b>Les comptes clients</b>
+          <span id="cli-compte"></span>
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="nouvelleCommande('')">Nouvelle commande</button>
+      </div>
+
+      <h2 class="adm-titre">Inscrire un client</h2>
+      <div class="adm-filtres">
+        <div>
+          <label for="cli-etab">Établissement ou société</label>
+          <input type="text" id="cli-etab" placeholder="Merinal Laboratoires">
+        </div>
+        <div>
+          <label for="cli-nom">Nom du contact</label>
+          <input type="text" id="cli-nom" placeholder="Amel Z.">
+        </div>
+        <div>
+          <label for="cli-tel">Téléphone</label>
+          <input type="tel" id="cli-tel" placeholder="0550 11 22 33">
+        </div>
+        <div>
+          <label for="cli-email">Email</label>
+          <input type="email" id="cli-email" placeholder="vous@exemple.dz">
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterClient()">Inscrire ce client</button>
+      </div>
+      <p class="msg-err" id="cli-err">Vérifiez l'établissement, le nom, le téléphone et l'email.</p>
+      <p class="adm-aide">L'email identifie le client : s'il est déjà inscrit, sa fiche se met à jour
+      au lieu d'apparaître deux fois. Le client n'a rien à faire de son côté.</p>
+
+      <h2 class="adm-titre">Les clients</h2>
+      <div id="cli-liste"></div>
+    </div>
+
+    <!-- ============ LIVREURS ============
+         Les noms se remplissent tout seuls quand le traiteur affecte un livreur
+         à une commande. Ici il les tient : inscrire, corriger, retirer, et voir
+         ce que chacun a à livrer. La première ligne du tableau est celle qui
+         compte : les commandes validées que personne n'a prises. -->
+    <div class="adm-panneau" id="panneau-livreurs" hidden>
+
+      <div class="adm-impression no-print">
+        <div>
+          <b>Les livreurs</b>
+          <span id="liv-compte"></span>
+        </div>
+        <button type="button" class="bouton bouton--secondaire bouton--petit"
+          onclick="voirTournee('__aucun', 'Commandes sans livreur')">Voir ce qui reste à affecter</button>
+      </div>
+
+      <h2 class="adm-titre">Inscrire un livreur</h2>
+      <div class="adm-filtres">
+        <div>
+          <label for="liv-nouveau">Nom du livreur</label>
+          <input type="text" id="liv-nouveau" placeholder="Sofiane" onkeydown="if(event.key==='Enter')ajouterLivreurALaListe()">
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterLivreurALaListe()">Inscrire ce livreur</button>
+      </div>
+      <p class="msg-err" id="liv-err">Écrivez un nom.</p>
+      <p class="adm-aide">Un nom s'inscrit aussi tout seul quand vous affectez un livreur depuis la
+      fiche d'une commande. Corriger un nom ici le corrige sur ses commandes. Retirer un nom ne
+      touche pas aux commandes déjà affectées : elles gardent son nom écrit dessus.</p>
+
+      <h2 class="adm-titre">Ce qu'ils ont à livrer</h2>
+      <div id="liv-liste"></div>
+    </div>
+
+    <!-- ============ CATALOGUE ============
+         Les plats et les coffrets du site, que le traiteur tient lui-même :
+         ajouter, modifier, changer le prix, mettre une photo, monter ou
+         descendre dans la liste, cacher. Ce qu'il change ici s'empile sur le
+         catalogue écrit dans js/data.js et se garde dans son navigateur. -->
+    <div class="adm-panneau" id="panneau-catalogue" hidden>
+
+      <div class="adm-impression no-print">
+        <div>
+          <b>Ce que le traiteur a changé</b>
+          <span id="cat-resume">Le catalogue du site vient du code. Tout ce que vous
+          modifiez ici s'ajoute par-dessus, et se garde dans ce navigateur.</span>
+        </div>
+        <button type="button" class="bouton bouton--secondaire bouton--petit" onclick="reinitialiserCatalogue()">Revenir au catalogue du site</button>
+      </div>
+
+      <h2 class="adm-titre">Ajouter un plat ou un coffret</h2>
+      <div class="adm-filtres">
+        <div>
+          <label for="cat-nom">Nom</label>
+          <input type="text" id="cat-nom" placeholder="Coffret VIP viande">
+        </div>
+        <div>
+          <label for="cat-prix">Prix hors taxes (DA)</label>
+          <input type="number" id="cat-prix" min="0" step="50" placeholder="Laissez vide pour sur demande">
+        </div>
+        <div>
+          <label for="cat-cat">Rubrique</label>
+          <!-- Les quatre rubriques sont écrites par le script, dans
+               admin-catalogue.js : elles doivent rester les quatre sections de
+               la page Entreprises, sinon le coffret ne s'affiche nulle part. -->
+          <select id="cat-cat"></select>
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterCoffret()">Ajouter</button>
+      </div>
+      <p class="msg-err" id="cat-err">Un nom suffit. Le prix peut rester vide : le coffret passe sur demande.</p>
+
+      <h2 class="adm-titre">Les plats du site</h2>
+      <div id="cat-liste"></div>
+    </div>
+
+    <!-- ============ MEDIAS ============
+         Les deux bandes qui passent une video ou une photo sur le site : celle
+         du haut de la page Entreprises et celle qui defile sur le cote. Le
+         traiteur choisit parmi les fichiers deposes dans img/media/. -->
+    <div class="adm-panneau" id="panneau-medias" hidden>
+
+      <h2 class="adm-titre">La bande du haut</h2>
+      <p class="adm-aide">Une vidéo courte et légère, silencieuse, qui tourne en boucle
+      en haut de la page Entreprises. Sans vidéo choisie, la bande montre la photo.</p>
+      <div id="med-haut"></div>
+
+      <h2 class="adm-titre">La bande latérale</h2>
+      <p class="adm-aide">Pour une vidéo ou une photo d'un événement ou d'une promotion.
+      Elle reste visible pendant que le client descend la page.</p>
+      <div id="med-cote"></div>
+
+      <div class="adm-impression no-print">
+        <div>
+          <b>Où déposer les fichiers</b>
+          <span>Dans <code>img/media/</code>, sur le site. Les vidéos en mp4 ou webm,
+          les images en jpg. Elles apparaissent ici dès que la page est rechargée.
+          Le traiteur les choisit lui-même, il n'a rien à téléverser.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAIEMENTS ============
+         Ce qui est rentré, ce qui reste dû, et l'historique. -->
+    <div class="adm-panneau" id="panneau-paiements" hidden>
+
+      <!-- L'argent qui dort, en une ligne : la mecanique du site. Rouge tant
+           qu'il reste de l'argent du, vert quand tout est encaisse. -->
+      <div class="adm-solde-bande" id="pay-solde-bande"></div>
+
+      <h2 class="adm-titre">Enregistrer un versement</h2>
+      <div class="adm-filtres">
+        <div>
+          <label for="pay-email">Client</label>
+          <select id="pay-email" onchange="remplirMontant()"></select>
+        </div>
+        <div>
+          <label for="pay-montant">Montant versé (DA)</label>
+          <input type="number" id="pay-montant" min="0" step="50" placeholder="0">
+        </div>
+        <div>
+          <label for="pay-type">Type de paiement</label>
+          <select id="pay-type" onchange="majTypePaiement()">
+            <option>Espèces</option>
+            <option>Chèque</option>
+            <option>Virement</option>
+          </select>
+        </div>
+        <div id="pay-num-bloc" hidden>
+          <label for="pay-num">Numéro du chèque</label>
+          <input type="text" id="pay-num" placeholder="0000000">
+        </div>
+        <div>
+          <label for="pay-date">Date</label>
+          <input type="date" id="pay-date">
+        </div>
+        <div>
+          <label for="pay-statut">Statut</label>
+          <select id="pay-statut">
+            <option value="enc">Encaissé</option>
+            <option value="att">En attente d'encaissement (chèque, virement)</option>
+          </select>
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterVersement()">Ajouter le versement</button>
+      </div>
+      <p class="msg-err" id="pay-err">Choisissez un client et un montant supérieur à zéro.</p>
+      <p class="adm-aide">Le montant se propose au solde du client : vous pouvez le remplacer. Un versement en attente
+      d'encaissement ne réduit pas le solde tant qu'il n'est pas encaissé. Un particulier règle à la livraison, il n'a
+      donc pas de solde suivi ici.</p>
+
+      <h2 class="adm-titre">Balance par client (TTC)</h2>
+      <div id="pay-balance"></div>
+
+      <h2 class="adm-titre">Historique des versements</h2>
+      <div id="pay-historique"></div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="pied">
+  <div class="contenu">
+    <div class="pied__credits">Espace traiteur Erriane Foods. &copy; Tous droits réservés.</div>
+  </div>
+</footer>
+
+<script src="../js/amorce.js?v=20261109a"></script>
+<script src="../js/data.js?v=20261109a"></script>
+<script src="../js/media.js?v=20261109a"></script>
+<script src="../js/ui.js?v=20261109a"></script>
+<script src="../js/admin.js?v=20261109a"></script>
+<script src="../js/admin-commandes.js?v=20261109a"></script>
+<script src="../js/admin-clients.js?v=20261109a"></script>
+<script src="../js/admin-livreurs.js?v=20261109a"></script>
+<script src="../js/admin-catalogue.js?v=20261109a"></script>
+<script src="../js/admin-paiements.js?v=20261109a"></script>
+<script src="../js/admin-medias.js?v=20261109a"></script>
+</body>
+</html>
