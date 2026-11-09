@@ -187,44 +187,62 @@
     </div>
 
     <!-- ============ CATALOGUE ============
-         Les plats et les coffrets du site, que le traiteur tient lui-même :
-         ajouter, modifier, changer le prix, mettre une photo, monter ou
-         descendre dans la liste, cacher. Ce qu'il change ici s'empile sur le
-         catalogue écrit dans js/data.js et se garde dans son navigateur. -->
+         Deux côtés, comme le site : les coffrets de la page Entreprises et les
+         plats de la page Particuliers. Chacun s'affiche en cartes, dans l'ordre
+         où le client le voit, avec ses rubriques. Ce que le traiteur change ici
+         s'empile sur le catalogue du code et se garde dans son navigateur. -->
     <div class="adm-panneau" id="panneau-catalogue" hidden>
 
       <div class="adm-impression no-print">
         <div>
-          <b>Ce que le traiteur a changé</b>
+          <b>Le catalogue du site</b>
           <span id="cat-resume">Le catalogue du site vient du code. Tout ce que vous
           modifiez ici s'ajoute par-dessus, et se garde dans ce navigateur.</span>
         </div>
         <button type="button" class="bouton bouton--secondaire bouton--petit" onclick="reinitialiserCatalogue()">Revenir au catalogue du site</button>
       </div>
 
-      <h2 class="adm-titre">Ajouter un plat ou un coffret</h2>
-      <div class="adm-filtres">
+      <h2 class="adm-titre">Côté entreprises</h2>
+      <p class="adm-aide">Les coffrets de la page Entreprises, dans l'ordre où le client les voit.</p>
+      <div class="cat-rubriques" id="cat-rubriques-entreprise"></div>
+      <div class="adm-filtres cat-ajout">
         <div>
-          <label for="cat-nom">Nom</label>
+          <label for="cat-nom">Nom du coffret</label>
           <input type="text" id="cat-nom" placeholder="Coffret VIP viande">
         </div>
         <div>
-          <label for="cat-prix">Prix hors taxes (DA)</label>
+          <label for="cat-prix">Prix (DA)</label>
           <input type="number" id="cat-prix" min="0" step="50" placeholder="Laissez vide pour sur demande">
         </div>
         <div>
           <label for="cat-cat">Rubrique</label>
-          <!-- Les quatre rubriques sont écrites par le script, dans
-               admin-catalogue.js : elles doivent rester les quatre sections de
-               la page Entreprises, sinon le coffret ne s'affiche nulle part. -->
           <select id="cat-cat"></select>
         </div>
-        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterCoffret()">Ajouter</button>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterCoffret()">Ajouter un coffret</button>
       </div>
       <p class="msg-err" id="cat-err">Un nom suffit. Le prix peut rester vide : le coffret passe sur demande.</p>
+      <div id="cat-cartes-entreprise"></div>
 
-      <h2 class="adm-titre">Les plats du site</h2>
-      <div id="cat-liste"></div>
+      <h2 class="adm-titre">Côté clients</h2>
+      <p class="adm-aide">Les plats de la page Particuliers, dans l'ordre où ils s'affichent.</p>
+      <div class="cat-rubriques" id="cat-rubriques-plats"></div>
+      <div class="adm-filtres cat-ajout">
+        <div>
+          <label for="plat-nom">Nom du plat</label>
+          <input type="text" id="plat-nom" placeholder="Tajine de poulet">
+        </div>
+        <div>
+          <label for="plat-prix">Prix (DA)</label>
+          <input type="number" id="plat-prix" min="0" step="50" placeholder="900">
+        </div>
+        <div>
+          <label for="plat-cat">Rubrique</label>
+          <select id="plat-cat"></select>
+        </div>
+        <button type="button" class="bouton bouton--accent bouton--petit" onclick="ajouterPlat()">Ajouter un plat</button>
+      </div>
+      <p class="msg-err" id="plat-err">Un nom et un prix suffisent.</p>
+      <div id="cat-cartes-plats"></div>
     </div>
 
     <!-- ============ MEDIAS ============
@@ -301,7 +319,7 @@
       d'encaissement ne réduit pas le solde tant qu'il n'est pas encaissé. Un particulier règle à la livraison, il n'a
       donc pas de solde suivi ici.</p>
 
-      <h2 class="adm-titre">Balance par client (TTC)</h2>
+      <h2 class="adm-titre">Balance par client (DA)</h2>
       <div id="pay-balance"></div>
 
       <h2 class="adm-titre">Historique des versements</h2>
@@ -317,16 +335,17 @@
   </div>
 </footer>
 
-<script src="../js/amorce.js?v=20261109a"></script>
-<script src="../js/data.js?v=20261109a"></script>
-<script src="../js/media.js?v=20261109a"></script>
-<script src="../js/ui.js?v=20261109a"></script>
-<script src="../js/admin.js?v=20261109a"></script>
-<script src="../js/admin-commandes.js?v=20261109a"></script>
-<script src="../js/admin-clients.js?v=20261109a"></script>
-<script src="../js/admin-livreurs.js?v=20261109a"></script>
-<script src="../js/admin-catalogue.js?v=20261109a"></script>
-<script src="../js/admin-paiements.js?v=20261109a"></script>
-<script src="../js/admin-medias.js?v=20261109a"></script>
+<script src="../js/amorce.js?v=20261109f"></script>
+<script src="../js/data.js?v=20261109f"></script>
+<script src="../js/carte.js?v=20261109f"></script>
+<script src="../js/media.js?v=20261109f"></script>
+<script src="../js/ui.js?v=20261109f"></script>
+<script src="../js/admin.js?v=20261109f"></script>
+<script src="../js/admin-commandes.js?v=20261109f"></script>
+<script src="../js/admin-clients.js?v=20261109f"></script>
+<script src="../js/admin-livreurs.js?v=20261109f"></script>
+<script src="../js/admin-catalogue.js?v=20261109f"></script>
+<script src="../js/admin-paiements.js?v=20261109f"></script>
+<script src="../js/admin-medias.js?v=20261109f"></script>
 </body>
 </html>

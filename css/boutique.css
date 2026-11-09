@@ -460,6 +460,19 @@
 .pres__album--seule .pres__fleche,
 .pres__album--seule .pres__points,
 .pres__album--seule .pres__compteur { display: none; }
+/* La légende écrite par le traiteur, posée sur le bas de la photo. */
+.pres__legende {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 18px 14px 10px;
+  color: #fff;
+  font-size: .86rem;
+  line-height: 1.35;
+  background: linear-gradient(transparent, rgba(0, 0, 0, .68));
+}
 .pres__compteur {
   position: absolute;
   top: var(--espace-2);

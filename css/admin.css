@@ -752,3 +752,50 @@ body[data-espace="admin"] .ov__boite--large { max-width: 900px; }
 .adm-solde-bande span { font-size: .92rem; }
 .adm-solde-bande--du { background: #FDECEC; border-color: #E4B4B4; color: #8B1A1A; }
 .adm-solde-bande--ok { background: #EAF6EE; border-color: #B9DCC7; color: #1A7A44; }
+
+/* ---------- Le catalogue en cartes (9 novembre 2026) ----------
+   Deux côtés, deux grilles. La carte reprend celle du site : une photo, un nom,
+   une rubrique, un prix, et les gestes du traiteur dessous. */
+.cat-rubriques { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 14px; max-width: 540px; }
+.cat-rubrique {
+  display: grid; grid-template-columns: 1fr auto; align-items: center;
+  gap: 8px; padding: 4px 8px;
+  background: var(--couleur-fond-2); border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+}
+.cat-rubrique input {
+  width: 100%; min-width: 0; padding: 2px 0; border: 0;
+  background: transparent; font: inherit; color: inherit;
+}
+.cat-rubrique--ajout { border-style: dashed; background: transparent; }
+.cat-sous-titre {
+  font-family: var(--police-titres); font-size: 1.05rem; letter-spacing: .03em;
+  text-transform: uppercase; margin: 22px 0 10px;
+}
+.cat-grille {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--espace-3);
+}
+.cat-carte {
+  display: flex; flex-direction: column; background: #fff;
+  border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-carte);
+  overflow: hidden;
+}
+.cat-carte--cache { opacity: .55; }
+.cat-carte__vue { aspect-ratio: 4 / 3; background: var(--couleur-fond-2); }
+.cat-carte__vue img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cat-carte__vide {
+  display: flex; align-items: center; justify-content: center; height: 100%;
+  color: var(--couleur-texte-3); font-size: .82rem;
+}
+.cat-carte__corps { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px; }
+.cat-carte__prix { font-weight: 700; }
+.cat-carte__demande { font-weight: 400; color: var(--couleur-alerte); }
+.cat-carte__actes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.cat-vue { grid-template-columns: 74px 1fr auto; }
+.cat-vue__champs { display: flex; flex-direction: column; gap: 6px; }
+.cat-vue__champs input,
+.cat-vue__champs select {
+  width: 100%; padding: 7px 9px; border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon); font: inherit;
+}

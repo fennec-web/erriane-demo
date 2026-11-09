@@ -128,9 +128,7 @@ function carteCommande(o){
     /* Le client voit que sa pièce jointe est arrivée : sinon il la renvoie, ou
        il appelle pour savoir. */
     (o.bdc ? '<p class="cmd-suite">Bon de commande joint : <b>' + esc(o.bdc) + '</b></p>' : '') +
-    '<div class="carte-cmd__pied"><span>Total hors taxes</span><b>' + fmt(o.total) + '</b></div>' +
-    '<div class="carte-cmd__pied"><span>TVA 19 %</span><b>' + fmt(tvaDe(o.total)) + '</b></div>' +
-    '<div class="carte-cmd__pied carte-cmd__pied--fort"><span>Total à payer</span><b>' + fmt(ttcDe(o.total)) + '</b></div>' +
+    '<div class="carte-cmd__pied carte-cmd__pied--fort"><span>Total</span><b>' + fmt(o.total) + '</b></div>' +
     '</article>';
 }
 
@@ -146,7 +144,7 @@ function pagePaiements(){
 
   zone.innerHTML =
     '<div class="compte-resume">' +
-      '<div><span>Commandes validées (TTC)</span><b>' + fmt(due) + '</b></div>' +
+      '<div><span>Commandes validées</span><b>' + fmt(due) + '</b></div>' +
       '<div><span>Versements encaissés</span><b>' + fmt(paid) + '</b></div>' +
       '<div><span>Solde</span><b class="' + (b > 0 ? 'solde-neg' : 'solde-pos') + '">' + fmt(b) + '</b></div>' +
     '</div>' +
