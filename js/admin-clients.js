@@ -86,7 +86,7 @@ function ligneClient(c){
     '<td data-libelle="Contact">' + esc(c.tel || 'Téléphone non renseigné') +
       '<span class="adm-sous">' + esc(c.email) + '</span></td>' +
     '<td data-libelle="Commandes">' + r.nb + '</td>' +
-    '<td data-libelle="Facturé"><b>' + fmt(r.ttc) + '</b><span class="adm-sous">HT ' + fmt(r.ht) + '</span></td>' +
+    '<td data-libelle="Facturé"><b>' + fmt(r.ttc) + '</b></td>' +
     '<td data-libelle="Solde"><b class="' + (r.solde > 0 ? 'adm-solde--du' : 'adm-solde--ok') + '">' + fmt(r.solde) + '</b></td>' +
     '<td data-libelle="" class="adm-actions-cellule">' +
       '<button type="button" class="bouton bouton--secondaire bouton--petit"' +
@@ -143,8 +143,8 @@ function rendreLignesCmd(){
       '<select onchange="majLigneCmd(' + i + ', \'cofId\', this.value)">' + choixCoffret(l) + '</select>' +
       '<input type="number" min="0" step="1" value="' + (l.qty || '') + '" placeholder="Qté"' +
         ' aria-label="Quantité" onchange="majLigneCmd(' + i + ', \'qty\', this.value)">' +
-      '<input type="number" min="0" step="50" value="' + (l.pu === null ? '' : l.pu) + '" placeholder="Prix HT"' +
-        ' aria-label="Prix unitaire hors taxes" onchange="majLigneCmd(' + i + ', \'pu\', this.value)">' +
+      '<input type="number" min="0" step="50" value="' + (l.pu === null ? '' : l.pu) + '" placeholder="Prix (DA)"' +
+        ' aria-label="Prix unitaire" onchange="majLigneCmd(' + i + ', \'pu\', this.value)">' +
       '<span class="cmd-ligne__total" id="cmd-ligne-total-' + i + '">' + totalLigne(l) + '</span>' +
       '<button type="button" class="bouton bouton--secondaire bouton--petit"' +
         ' onclick="retirerLigneCmd(' + i + ')">Retirer</button>' +
@@ -170,13 +170,7 @@ function majTotauxCmd(){
   });
   var t = document.getElementById('cmd-total');
   if(t){
-    /* Les trois mêmes lignes que sur la fiche d'une commande : ce qui part chez
-       le client ne doit pas s'écrire ici autrement. */
-    var ht = totalCmd();
-    t.innerHTML =
-      '<div><span>Total hors taxes</span><span>' + fmt(ht) + '</span></div>' +
-      '<div><span>TVA 19 %</span><span>' + fmt(tvaDe(ht)) + '</span></div>' +
-      '<div><span>Total TTC</span><span>' + fmt(ttcDe(ht)) + '</span></div>';
+    t.innerHTML = '<div><span>Total</span><span>' + fmt(totalCmd()) + '</span></div>';
   }
 }
 function majLigneCmd(i, champ, valeur){

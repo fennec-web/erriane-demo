@@ -4,10 +4,8 @@
    sont les siens, tels qu'il les a écrits.
 
    Deux choses à savoir avant de toucher à ce fichier :
-   - On ne sait pas encore si ces prix sont hors taxes ou TTC. La page n'affiche
-     donc aucune mention de taxe et le total du panier s'arrête à la somme. Le
-     jour où le client répond, c'est `ecrireTotaux` et `messageWhatsApp`
-     (js/panier.js) qu'on règle, pas cette page.
+   - Les prix de la carte sont TTC, comme ceux des coffrets. Aucune mention de
+     taxe n'apparaît, et le total du panier est la somme des lignes.
    - Un particulier n'a pas de compte : le panier vit librement, et la commande
      part sur le WhatsApp du traiteur en confirmant (voir panier.js).
 
@@ -15,59 +13,6 @@
    comme pour les entreprises : il a son bandeau en haut de page, et il reste
    aussi dans sa rubrique, comme sur la carte papier. */
 
-var MENU_PARTICULIERS = [
-  { cat: 'Entrées froides', plats: [
-    { id: 'm-cesar',      nom: 'Salade César',                 prix: 600, img: 'menu/salade-cesar.jpg' },
-    { id: 'm-variee',     nom: 'Salade variée',                prix: 400, img: 'menu/salade-variee.jpg' },
-    { id: 'm-parisienne', nom: 'Salade Parisienne',            prix: 450, img: 'menu/salade-parisienne.jpg' },
-    { id: 'm-oeufs',      nom: 'Œufs durs à la mayonnaise',    prix: 300, img: 'menu/oeufs-durs-mayonnaise.jpg' },
-    { id: 'm-laitue',     nom: 'Cœur de laitue',               prix: 250, img: 'menu/coeur-de-laitue.jpg' }
-  ]},
-  { cat: 'Entrées chaudes', plats: [
-    /* Une seule photo pour les deux gratins, et une pour le bourek à la viande
-       faute de troisième vue. À remplacer quand le client en envoie. */
-    { id: 'm-gratin-poulet',  nom: 'Gratin au poulet',                prix: 500, img: 'menu/gratins.jpg' },
-    { id: 'm-gratin-viande',  nom: 'Gratin à la viande hachée',       prix: 600, img: 'menu/gratins.jpg' },
-    { id: 'm-bourek-3f',      nom: 'Bourek au 3 fromages (duo)',      prix: 300, img: 'menu/bourek-01.jpg' },
-    { id: 'm-bourek-poulet',  nom: 'Bourek au poulet (duo)',          prix: 350, img: 'menu/bourek-02.jpg' },
-    { id: 'm-bourek-viande',  nom: 'Bourek à la viande hachée (duo)', prix: 400, img: 'menu/bourek-01.jpg' }
-  ]},
-  { cat: 'Plats de résistance, viande rouge', plats: [
-    { id: 'm-roti-veau',   nom: 'Rôti de veau',              prix: 1300, img: 'menu/roti-veau.jpg' },
-    { id: 'm-saute-veau',  nom: 'Sauté de veau',             prix: 1500, img: 'menu/saute-veau.jpg' },
-    /* Le plat est resté sans photo jusqu'au 27 octobre : le fichier du client
-       s'appelait « Émincé de veau en sauce » et n'avait jamais été rangé, alors
-       qu'il était bien dans le dossier qu'il a envoyé (Massyl l'a fait
-       remarquer). Tous les plats de la carte ont donc leur propre vue. */
-    { id: 'm-emince-veau', nom: 'Émincé de veau à la crème', prix: 1400, img: 'menu/emince-veau.jpg' },
-    { id: 'm-mechoui',     nom: 'Méchoui d\'agneau (1/2 épaule)', prix: 3000, img: 'menu/mechoui.jpg', phare: true }
-  ]},
-  { cat: 'Plats de résistance, viande blanche', plats: [
-    { id: 'm-supreme',   nom: 'Suprême de poulet aux champignons frais', prix: 1000, img: 'menu/supreme-poulet.jpg' },
-    { id: 'm-escalope',  nom: 'Escalope de dinde grillée',               prix: 800,  img: 'menu/escalope-dinde.jpg' },
-    { id: 'm-cuisse',    nom: 'Cuisse de poulet farcie à la mozzarella', prix: 900,  img: 'menu/cuisse-poulet-mozzarella.jpg' },
-    { id: 'm-roti-dinde', nom: 'Rôti de dinde',                          prix: 1000, img: 'menu/roti-dinde.jpg' }
-  ]},
-  { cat: 'Pâtes', plats: [
-    { id: 'm-spaghetti',    nom: 'Spaghetti bolognaise',    prix: 700, img: 'menu/spaghetti-bolognaise.jpg' },
-    { id: 'm-tagliatelles', nom: 'Tagliatelles au poulet',  prix: 700, img: 'menu/tagliatelles-poulet.jpg' },
-    { id: 'm-lasagnes',     nom: 'Lasagnes à la viande hachée', prix: 700, img: 'menu/lasagnes.jpg' },
-    { id: 'm-penne',        nom: 'Pennés Arrabiatta',       prix: 600, img: 'menu/penne-arrabiatta.jpg' }
-  ]},
-  { cat: 'Desserts', plats: [
-    { id: 'm-mousse',    nom: 'Mousse au chocolat noir', prix: 250, img: 'menu/mousse-chocolat.jpg' },
-    { id: 'm-fondant',   nom: 'Fondant au chocolat',     prix: 300, img: 'menu/fondant-chocolat.jpg' },
-    { id: 'm-tiramisu',  nom: 'Tiramisu',                prix: 350, img: 'menu/tiramisu.jpg' }
-  ]}
-];
-
-function platDe(id){
-  var trouve = null;
-  MENU_PARTICULIERS.forEach(function(s){
-    s.plats.forEach(function(p){ if(p.id === id) trouve = p; });
-  });
-  return trouve;
-}
 
 /* ---------- Les rubriques et la galerie ----------
    Massyl a demandé, le 27 octobre 2026, une carte « segmentée comme sur le site
@@ -103,17 +48,14 @@ function rubriquesHtml(){
   }
   return '<nav class="carte-nav" aria-label="Rubriques de la carte">' +
     puce(-1, 'Tout') +
-    MENU_PARTICULIERS.map(function(s, i){ return puce(i, s.cat); }).join('') +
+    rubriquesPlats().map(function(r, i){ return puce(i, r.nom); }).join('') +
   '</nav>';
 }
 
 function platsAffiches(){
-  if(RUBRIQUE === -1){
-    var tous = [];
-    MENU_PARTICULIERS.forEach(function(s){ tous = tous.concat(s.plats); });
-    return tous;
-  }
-  return MENU_PARTICULIERS[RUBRIQUE] ? MENU_PARTICULIERS[RUBRIQUE].plats : [];
+  if(RUBRIQUE === -1) return PLATS.slice();
+  var r = rubriquesPlats()[RUBRIQUE];
+  return PLATS.filter(function(p){ return r && p.cat === r.cat; });
 }
 
 function rendreGalerie(){
@@ -145,7 +87,14 @@ function poserModalePlat(){
   poserModale('ov-plat',
     '<div class="ov__boite" onclick="event.stopPropagation()">' +
       '<button class="ov__fermer" onclick="closeOv(\'ov-plat\')" aria-label="Fermer">&times;</button>' +
-      '<div id="pl-vue"></div>' +
+      '<div class="pres__album pres__album--seule" id="pl-album">' +
+        '<div class="pres__pistes" id="pl-pistes"></div>' +
+        '<button type="button" class="pres__fleche pres__fleche--prec" onclick="plAller(-1)" aria-label="Vue précédente">&#8249;</button>' +
+        '<button type="button" class="pres__fleche pres__fleche--suiv" onclick="plAller(1)" aria-label="Vue suivante">&#8250;</button>' +
+        '<span class="pres__compteur" id="pl-compteur"></span>' +
+        '<div class="pres__points" id="pl-points"></div>' +
+        '<p class="pres__legende" id="pl-legende"></p>' +
+      '</div>' +
       '<h3 id="pl-nom"></h3>' +
       '<div class="compo__prix" id="pl-prix"></div>' +
       '<p class="pres__desc" id="pl-desc"></p>' +
@@ -170,15 +119,64 @@ function poserModalePlat(){
   document.getElementById('ov-plat').setAttribute('onclick', "if(event.target===this)closeOv('ov-plat')");
 }
 
+/* Les vues d'un plat, avec leur légende. Un plat sans photo n'affiche pas
+   d'album : mieux vaut rien qu'une image qui ne le représente pas. */
+var PLAT_PHOTOS = [], PLAT_I = 0;
+function plPeindre(){
+  var pistes = document.getElementById('pl-pistes');
+  if(pistes) pistes.style.transform = 'translateX(' + (-PLAT_I * 100) + '%)';
+  var compteur = document.getElementById('pl-compteur');
+  if(compteur) compteur.textContent = PLAT_PHOTOS.length ? (PLAT_I + 1) + ' / ' + PLAT_PHOTOS.length : '';
+  var points = document.getElementById('pl-points');
+  if(points){
+    for(var i = 0; i < points.children.length; i++){
+      points.children[i].className = 'pres__point' + (i === PLAT_I ? ' on' : '');
+    }
+  }
+  var legende = document.getElementById('pl-legende');
+  if(legende){
+    var texte = (PLAT_PHOTOS[PLAT_I] && PLAT_PHOTOS[PLAT_I].legende) || '';
+    legende.textContent = texte;
+    voir(legende, !!texte);
+  }
+}
+function plAller(d){
+  if(PLAT_PHOTOS.length < 2) return;
+  PLAT_I = (PLAT_I + d + PLAT_PHOTOS.length) % PLAT_PHOTOS.length;
+  plPeindre();
+}
+function plAllerA(i){
+  PLAT_I = i;
+  plPeindre();
+}
+
 function ouvrirQuantitePlat(id){
   var p = platDe(id);
   if(!p) return;
   PLAT_COURANT = id;
   poserModalePlat();
-  var vue = document.getElementById('pl-vue');
-  vue.innerHTML = p.img
-    ? '<img class="plat-vue" src="img/' + p.img + '" alt="' + esc(p.nom) + '">'
-    : '';
+  PLAT_PHOTOS = photosDe(p).map(function(x){
+    return {src: 'img/' + x.src, legende: x.legende || ''};
+  });
+  PLAT_I = 0;
+  var album = document.getElementById('pl-album');
+  if(PLAT_PHOTOS.length){
+    document.getElementById('pl-pistes').innerHTML = PLAT_PHOTOS.map(function(x, i){
+      return '<img class="pres__photo" src="' + x.src + '" alt="' + esc(x.legende || (p.nom + ', vue ' + (i + 1))) + '"' +
+        (i ? ' loading="lazy"' : '') + '>';
+    }).join('');
+    document.getElementById('pl-points').innerHTML = PLAT_PHOTOS.map(function(x, i){
+      return '<button type="button" class="pres__point' + (i ? '' : ' on') + '" onclick="plAllerA(' + i + ')"' +
+        ' aria-label="Vue ' + (i + 1) + '"></button>';
+    }).join('');
+    album.className = 'pres__album' + (PLAT_PHOTOS.length > 1 ? '' : ' pres__album--seule');
+    voir(album, true);
+    plPeindre();
+  } else {
+    document.getElementById('pl-pistes').innerHTML = '';
+    document.getElementById('pl-points').innerHTML = '';
+    voir(album, false);
+  }
   document.getElementById('pl-nom').textContent = p.nom;
   document.getElementById('pl-prix').textContent = fmt(p.prix);
   /* La phrase et la portion n'apparaissent que si le client les a données :

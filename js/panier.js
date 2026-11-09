@@ -28,32 +28,27 @@ function enregistrerPanier(){
 function totalPanier(){
   return LINES.reduce(function(t, l){ return t + l.qty * l.pu; }, 0);
 }
-/* Le prix des coffrets est hors taxes : le panier affiche donc les trois lignes
-   du calcul, comme la fiche du traiteur. Un client qui découvre la TVA au
-   dernier écran se sentirait piégé, et le traiteur devrait se justifier. */
+/* Un seul total, partout : les prix sont TTC (décision de Massyl, 9 novembre
+   2026). La fonction garde son nom et son préfixe pour tous les écrans. */
 function ecrireTotaux(prefixe){
-  var ht = totalPanier();
+  var total = totalPanier();
   var a = document.getElementById(prefixe + '-total'),
       b = document.getElementById(prefixe + '-tva'),
       c = document.getElementById(prefixe + '-ttc');
-  if(a) a.textContent = fmt(ht);
-  if(b) b.textContent = fmt(tvaDe(ht));
-  if(c) c.textContent = fmt(ttcDe(ht));
+  if(a) a.textContent = fmt(total);
+  if(b) b.textContent = '';
+  if(c) c.textContent = fmt(total);
 }
 
 /* ---------- Fenêtre panier ---------- */
 function poserModalePanier(){
-  /* Chez les particuliers, on ne sait pas encore si les prix de la carte sont
-     hors taxes ou TTC (question posée au client). On n'affiche donc **pas** de
-     ligne de TVA et on n'en invente pas : un seul total, celui de la carte, et le
-     traiteur confirme le montant. Chez les entreprises, les trois lignes restent. */
-  var totals = estParticulier()
-    ? '<div class="panier__total panier__total--fort"><span>Total</span><b id="panier-total"></b></div>' +
-      '<p class="panier__note">Les prix sont ceux de la carte. Le traiteur confirme le montant et les frais de livraison avec vous.</p>'
-    : '<div class="panier__total"><span>Total hors taxes</span><b id="panier-total"></b></div>' +
-      '<div class="panier__total panier__total--calme"><span>TVA 19 %</span><b id="panier-tva"></b></div>' +
-      '<div class="panier__total panier__total--fort"><span>Total à payer</span><b id="panier-ttc"></b></div>' +
-      '<p class="panier__note">Les frais de livraison sont confirmés par le traiteur.</p>';
+  /* Les prix sont TTC, chez les entreprises comme chez les particuliers : un
+     seul total, et aucune ligne de taxe. */
+  var totals =
+    '<div class="panier__total panier__total--fort"><span>Total</span><b id="panier-total"></b></div>' +
+    '<p class="panier__note">' + (estParticulier()
+      ? 'Les prix sont ceux de la carte. Le traiteur confirme le montant et les frais de livraison avec vous.'
+      : 'Les frais de livraison sont confirmés par le traiteur.') + '</p>';
   poserModale('ov-panier',
     '<div class="ov__boite" onclick="event.stopPropagation()">' +
       '<button class="ov__fermer" onclick="closeOv(\'ov-panier\')" aria-label="Fermer">&times;</button>' +
@@ -298,13 +293,8 @@ function poserModaleCheckout(){
         ? 'Remplissez votre nom, la date, l\'heure, l\'adresse et le téléphone.'
         : 'Remplissez la date, l\'heure, le lieu et le téléphone.') + '</p>' +
       avertissement +
-      /* Même règle que le panier : la ligne de TVA n'existe que chez les
-         entreprises, dont les prix sont hors taxes. */
-      (particulier
-        ? '<div class="panier__total panier__total--fort"><span>Total</span><b id="ck-total"></b></div>'
-        : '<div class="panier__total"><span>Total hors taxes</span><b id="ck-total"></b></div>' +
-          '<div class="panier__total panier__total--calme"><span>TVA 19 %</span><b id="ck-tva"></b></div>' +
-          '<div class="panier__total panier__total--fort"><span>Total à payer</span><b id="ck-ttc"></b></div>') +
+      /* Un seul total, TTC, dans les deux espaces. */
+      '<div class="panier__total panier__total--fort"><span>Total</span><b id="ck-total"></b></div>' +
       '<button type="button" class="bouton bouton--accent bouton--large" id="ck-valider" onclick="validerCommande()">Confirmer la commande</button>' +
       '<p class="panier__note" id="ck-bas">Aucun paiement en ligne. Le traiteur vous rappelle pour valider votre commande.</p>' +
       /* Nom et téléphone sont collectés ici : la loi 18-07 demande de dire à
@@ -435,15 +425,7 @@ function messageWhatsApp(o){
   o.lignes.forEach(function(x){
     l.push('-' + x.qty + ' x ' + x.nom + ' : ' + fmt(x.qty * x.pu));
   });
-  /* Même choix que le panier : chez les particuliers, un seul total, sans ligne
-     de TVA, tant qu'on ne sait pas si la carte est hors taxes ou TTC. */
-  if(estParticulier()){
-    l.push('Total : ' + fmt(o.total));
-  } else {
-    l.push('Total hors taxes : ' + fmt(o.total));
-    l.push('TVA 19 % : ' + fmt(tvaDe(o.total)) + ' (hors frais de livraison)');
-    l.push('Total : ' + fmt(ttcDe(o.total)));
-  }
+  l.push('Total : ' + fmt(o.total));
   l.push('');
   l.push('Nom : ' + o.client.nom);
   l.push('Téléphone : ' + o.tel);

@@ -30,8 +30,8 @@ var LIVREURS = ['Rachid', 'Sofiane', 'Mounir'];
            la carte des particuliers ne passent pas par ici. Le champ est gardé
            pour que le filtre de `catalogue.js` reste le même le jour où un pack
            reviendrait des deux côtés.
-   prix  : en DA hors taxes, comme sur les propres offres de prix du client. La
-           TVA de 19 % s'ajoute au moment de la commande (voir ttcDe).
+   prix  : en DA TTC, le prix payé. Le traiteur travaille en TTC depuis le
+           9 novembre 2026 : aucun écran ne nomme la taxe (voir ttcDe).
            null = tarif sur demande (renvoie vers WhatsApp) : le bouton du pack
            ouvre alors WhatsApp au lieu du panier, et la carte affiche
            « Sur demande ». Six packs sont chiffrés aujourd'hui (les six
@@ -203,12 +203,16 @@ function waClient(tel){
 }
 
 /* ---------- L'argent ----------
-   Les prix du catalogue sont hors taxes : le client facture la TVA en plus,
-   exactement comme sur ses propres offres de prix. Une seule règle pour tout
-   le site, pour qu'aucun écran ne puisse afficher un montant différent. */
-var TAUX_TVA = 0.19;
-function tvaDe(ht){ return Math.round((ht || 0) * TAUX_TVA); }
-function ttcDe(ht){ return (ht || 0) + tvaDe(ht); }
+   Le traiteur travaille en TTC : les prix qu'il donne, et que le site affiche,
+   sont les prix payés. Aucun écran ne nomme la taxe, et aucun calcul ne
+   l'ajoute. Décision de Massyl le 9 novembre 2026.
+
+   Les deux fonctions restent, à l'identique, pour ne pas toucher à tous les
+   appels d'un coup : elles ne calculent plus rien. Si un jour le client repasse
+   en hors taxes, c'est ici et nulle part ailleurs. */
+var TAUX_TVA = 0;
+function tvaDe(montant){ return 0; }
+function ttcDe(montant){ return montant || 0; }
 
 /* ---------- Le traiteur ----------
    Ses mentions légales, recopiées de ses propres offres de prix de 2025. Rien ne
@@ -342,8 +346,8 @@ var ST_LABEL_CLIENT = {
 };
 
 /* Ce qu'un client doit, et ce qu'il a payé. Les deux sont en dinars sonnants,
-   donc TTC : le client règle la facture, pas le hors taxes. Un versement se
-   compare donc à des commandes validées augmentées de leur TVA. */
+   donc TTC : le client règle la facture, et les prix du site sont déjà TTC. Un
+   versement se compare donc directement aux commandes validées. */
 function dueFor(email){
   return ORDERS.filter(function(o){ return o.client.email === email && o.st === 'confirmee'; })
     .reduce(function(t, o){ return t + ttcDe(o.total); }, 0);
@@ -396,8 +400,8 @@ function ficheClient(email){
   var e = String(email).toLowerCase();
   return CLIENTS.filter(function(c){ return String(c.email).toLowerCase() === e; })[0] || null;
 }
-/* Crée la fiche au premier besoin : le traiteur écrit un numéro de TVA sur une
-   commande, la fiche se crée toute seule. */
+/* Crée la fiche au premier besoin : dès que le traiteur écrit une information
+   sur un client, la fiche se crée toute seule. */
 function assurerFiche(email, etab, nom){
   if(!email) return null;
   var f = ficheClient(email);

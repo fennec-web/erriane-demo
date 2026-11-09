@@ -12,7 +12,7 @@
 /* ---------- Affichage des packs ---------- */
 function cartePack(c){
   /* Le prix de la carte est nu : « 1 000 DA / coffret » (Massyl, 2 octobre 2026).
-     Le mot « hors taxes » reste là où le client paie vraiment : la ligne du total
+     Le prix est TTC partout : la carte, la fenêtre du coffret, le panier et la
      dans la fenêtre du coffret, le panier, la confirmation, le message WhatsApp
      et l'espace du traiteur. */
   var prix = c.prix
@@ -52,6 +52,27 @@ function renderPacks(){
   }
 }
 
+/* La page Entreprises n'écrit plus ses quatre rubriques à la main : elles
+   viennent des données, pour que le traiteur puisse en ajouter, en renommer ou
+   en retirer une depuis son espace. Une rubrique vide ne s'affiche pas. */
+function renderSectionsEntreprise(){
+  var zone = document.getElementById('catalogue-entreprises');
+  if(!zone) return;
+  var alt = false;
+  zone.innerHTML = rubriquesEntreprise().map(function(r){
+    var packs = COFFRETS.filter(function(c){ return c.cat === r.cat; });
+    if(!packs.length) return '';
+    alt = !alt;
+    return '<section class="section' + (alt ? ' section--alt' : '') + '" id="' + esc(r.id) + '">' +
+      '<div class="contenu">' +
+        (r.surtitre ? '<div class="surtitre">' + esc(r.surtitre) + '</div>' : '') +
+        '<h2>' + esc(r.nom) + '</h2>' +
+        (r.intro ? '<p style="color:var(--couleur-texte-2);max-width:56ch;margin-bottom:var(--espace-4)">' + esc(r.intro) + '</p>' : '') +
+        '<div class="catalogue-grid">' + packs.map(cartePack).join('') + '</div>' +
+      '</div></section>';
+  }).join('');
+}
+
 /* ---------- La fenêtre d'un pack ----------
    Le client ouvre un pack pour vérifier ce qu'il y a dedans avant de commander.
    Il y voit les vues réelles du pack, sa présentation, sa composition, et de quoi
@@ -72,6 +93,7 @@ function poserModaleComposition(){
           '<button type="button" class="pres__fleche pres__fleche--suiv" onclick="cpAller(1)" aria-label="Vue suivante">&#8250;</button>' +
           '<span class="pres__compteur" id="cp-compteur"></span>' +
           '<div class="pres__points" id="cp-points"></div>' +
+          '<p class="pres__legende" id="cp-legende"></p>' +
         '</div>' +
         '<div class="pres__texte">' +
           '<div class="pres__corps">' +
@@ -98,7 +120,7 @@ function poserModaleComposition(){
               '</div>' +
             '</div>' +
             '<div class="cmd__total" id="cp-total">' +
-              '<span>Total hors taxes</span><b id="q-total"></b>' +
+              '<span>Total</span><b id="q-total"></b>' +
             '</div>' +
             '<p class="msg-err" id="q-err">Indiquez une quantité supérieure à zéro.</p>' +
             '<div class="pres__acts">' +
@@ -149,6 +171,12 @@ function cpPeindre(){
   for(var i = 0; points && i < points.length; i++){
     points[i].className = 'pres__point' + (i === CP_I ? ' on' : '');
   }
+  var legende = document.getElementById('cp-legende');
+  if(legende){
+    var texte = (CP_PHOTOS[CP_I] && CP_PHOTOS[CP_I].legende) || '';
+    legende.textContent = texte;
+    voir(legende, !!texte);
+  }
 }
 
 function ouvrirComposition(id){
@@ -157,14 +185,17 @@ function ouvrirComposition(id){
   poserModaleComposition();
 
   /* L'album d'abord. Un pack sans photo n'affiche pas d'album du tout : mieux
-     vaut ne rien montrer qu'une image qui ne le représente pas. */
-  CP_PHOTOS = (c.photos || []).map(photoPack);
+     vaut ne rien montrer qu'une image qui ne le représente pas. Chaque vue peut
+     porter une légende écrite par le traiteur (9 novembre 2026). */
+  CP_PHOTOS = photosDe(c).map(function(p){
+    return {src: 'img/' + p.src, legende: p.legende || ''};
+  });
   CP_I = 0;
   var album = document.getElementById('cp-album');
   var pistes = document.getElementById('cp-pistes');
   if(CP_PHOTOS.length){
     pistes.innerHTML = CP_PHOTOS.map(function(p, i){
-      return '<img class="pres__photo" src="' + p + '" alt="' + esc(c.nom + ', vue ' + (i + 1)) + '"' +
+      return '<img class="pres__photo" src="' + p.src + '" alt="' + esc(p.legende || (c.nom + ', vue ' + (i + 1))) + '"' +
         (i ? ' loading="lazy"' : '') + '>';
     }).join('');
     document.getElementById('cp-points').innerHTML = CP_PHOTOS.map(function(p, i){
@@ -187,10 +218,8 @@ function ouvrirComposition(id){
     .classList.toggle('ov__boite--sans-album', !CP_PHOTOS.length);
 
   document.getElementById('cp-nom').textContent = c.nom;
-  /* La présentation annonce un prix, elle ne parle pas de taxes : le mot
-     « hors taxes » alourdissait la ligne du prix (Massyl, 2 octobre 2026). La
-     mention reste là où le client paie vraiment : la carte du coffret, le total
-     de cette fenêtre, le panier et la confirmation. */
+  /* La présentation annonce un prix, sans jamais nommer la taxe : les prix sont
+     TTC partout (Massyl, 9 novembre 2026). */
   document.getElementById('cp-prix').textContent = c.prix
     ? fmt(c.prix) + ' par coffret'
     : 'Tarif sur demande selon les quantités';
@@ -276,6 +305,7 @@ function ajouterAuPanier(){
 document.addEventListener('DOMContentLoaded', function(){
   poserToast();
   renderPacks();
+  renderSectionsEntreprise();
   renderCompte();
 
   /* Les flèches du clavier font défiler l'album, quand la présentation est

@@ -45,7 +45,7 @@ function ligneCommande(o){
     '<td data-libelle="Livraison">' + frDate(o.date) + '<span class="adm-sous">' + esc(o.heure) + '</span></td>' +
     '<td data-libelle="Lieu">' + esc(o.lieu) + '</td>' +
     '<td data-libelle="Unités">' + nb + '<span class="adm-sous">' + o.lignes.length + ' ligne' + (o.lignes.length > 1 ? 's' : '') + '</span></td>' +
-    '<td data-libelle="Total"><b>' + fmt(ttcDe(o.total)) + '</b><span class="adm-sous">HT ' + fmt(o.total) + '</span></td>' +
+    '<td data-libelle="Total"><b>' + fmt(o.total) + '</b></td>' +
     '<td data-libelle="Statut"><span class="etat etat--' + o.st + '">' + esc(ST_LABEL[o.st] || o.st) + '</span></td>' +
     '<td data-libelle="Livreur">' + esc((o.prep && o.prep.livreur) || 'non affecté') + '</td>' +
     '<td data-libelle=""><button type="button" class="bouton bouton--secondaire bouton--petit" onclick="ouvrirDetails(\'' + esc(o.ref) + '\')">Détails</button></td>' +
@@ -59,8 +59,7 @@ function rendreCommandes(){
   if(zone) zone.innerHTML =
     blocChiffre(c.attente, 'En attente', true) +
     blocChiffre(c.confirmee, 'Validées') +
-    blocChiffre(fmt(c.ttc), 'Facturé TTC') +
-    blocChiffre(fmt(c.tva), 'dont TVA');
+    blocChiffre(fmt(c.ttc), 'Facturé');
 
   var l = commandesFiltrees();
   var liste = document.getElementById('adm-liste');
@@ -169,9 +168,7 @@ function corpsDetails(o){
     o.lignes.map(function(l, i){ return champsCompo(o, l, i); }).join('') +
 
     '<div class="adm-totaux">' +
-      '<div><span>Total HT</span><span>' + fmt(o.total) + '</span></div>' +
-      '<div><span>TVA 19 %</span><span>' + fmt(tvaDe(o.total)) + '</span></div>' +
-      '<div><span>Total TTC</span><span>' + fmt(ttcDe(o.total)) + '</span></div>' +
+      '<div><span>Total</span><span>' + fmt(o.total) + '</span></div>' +
     '</div>' +
 
     '<div class="adm-actions">' +
@@ -216,7 +213,7 @@ function messageClient(o){
   else if(o.st === 'annulee') debut += ' est annulée.';
   else debut += ' est de nouveau en attente.';
   return debut + ' ' + l + '. Livraison le ' + frDate(o.date) + ' à ' + o.heure +
-    ', ' + o.lieu + '. Total TTC : ' + fmt(ttcDe(o.total)) + '.';
+    ', ' + o.lieu + '. Total : ' + fmt(o.total) + '.';
 }
 
 function ouvrirDetails(ref){

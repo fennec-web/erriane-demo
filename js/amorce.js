@@ -4,9 +4,9 @@
    traiteur n'a pas une ligne : le site ne montre rien de ce qu'il sait faire.
 
    Le scénario vient du brief (section « Mécanique choisie ») et de la première
-   démo : Merinal Laboratoires doit 64 260 DA TTC, a versé 40 000, et il reste
-   24 260 DA. 54 × Coffret Basique = 54 000 DA hors taxes ; TVA 19 % = 10 260 ;
-   TTC = 64 260. Rien n'est inventé : ce sont les chiffres du dossier.
+   démo. Les prix sont TTC depuis le 9 novembre 2026 : Merinal Laboratoires doit
+   54 000 DA (54 × Coffret Basique à 1 000 DA), a versé 40 000, et il reste
+   14 000 DA. Rien n'est inventé : ce sont les chiffres du dossier.
 
    Les dates sont relatives au jour de la visite, pour que la démonstration ne
    vieillisse pas. Elle ne s'écrit qu'une fois, et seulement si la mémoire du
